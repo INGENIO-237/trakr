@@ -1,23 +1,26 @@
 package app.vercel.ingenio_theta.trakr.users;
 
+import org.springframework.lang.Nullable;
+
+import app.vercel.ingenio_theta.trakr.accounts.Account;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Builder;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Table(name = "users")
 @Data
-@Builder
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-
-    private String email;
-
-    private String name;
-
-    private String password;
+@EqualsAndHashCode(callSuper = false)
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends Account {
+    @Nullable
+    @Column(nullable = true)
+    private String country;
 }
