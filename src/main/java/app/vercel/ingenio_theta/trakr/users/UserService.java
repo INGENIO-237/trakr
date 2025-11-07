@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
+
 @Service
 public class UserService implements IUserService {
 
@@ -19,10 +21,12 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> findById(String id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        return repository.findById(id);
+        throw new NotFoundException("User with ID '" + id + "' is no where to be found");
+
+        // if (id == null) {
+        //     return Optional.empty();
+        // }
+        // return repository.findById(id);
     }
 
     @Override
