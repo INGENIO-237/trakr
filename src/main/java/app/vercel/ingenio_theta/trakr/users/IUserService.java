@@ -1,16 +1,18 @@
 package app.vercel.ingenio_theta.trakr.users;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+
+import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
+import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 public interface IUserService {
-    List<User> findAll();
+    Page<UserResponse> findAll(GetUsersDto query);
 
-    Optional<User> findById(String id);
+    UserResponse findById(String id);
 
-    User create(User user);
+    UserResponse create(User user);
 
-    User update(User user, String id);
+    UserResponse update(User user, String id);
 
     void delete(String id);
 }
