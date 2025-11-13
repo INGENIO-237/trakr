@@ -1,0 +1,24 @@
+package app.vercel.ingenio_theta.trakr.users;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
+
+@Service
+public class UserMapper {
+    UserResponse toUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .country(user.getCountry())
+                .build();
+    }
+
+    List<UserResponse> toUserResponseList(Page<User> users) {
+        return users.stream().map(user -> toUserResponse(user)).toList();
+    }
+}
