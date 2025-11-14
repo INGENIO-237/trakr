@@ -1,20 +1,23 @@
 package app.vercel.ingenio_theta.trakr.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.data.domain.Page;
-
 import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
+import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
@@ -27,9 +30,9 @@ public class UserController {
     @GetMapping
     public ResponseEntity<PaginatedApiResponse<UserResponse>> findAll(@ModelAttribute GetUsersDto query) {
         Page<UserResponse> users = service.findAll(query);
-        
+
         PaginatedApiResponse<UserResponse> response = PaginatedApiResponse.of(users, "Users retrieved successfully");
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -37,15 +40,19 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponse>> findById(@PathVariable("id") String id) {
         UserResponse user = service.findById(id);
 
-        ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder().data(user).message("User retrieved")
-                .build();
+        ApiResponse<UserResponse> response = ApiResponse.of(user, "User retrieved successdully");
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public UserResponse create(User user) {
-        return service.create(user);
+    public ResponseEntity<ApiResponse<UserResponse>> create(@Validated @RequestBody CreateUserDto user) {
+        UserResponse createdUser = service.create(user);
+
+        ApiResponse<UserResponse> response = ApiResponse.of(createdUser, "User created successfully",
+                HttpStatus.CREATED);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping
@@ -54,7 +61,13 @@ public class UserController {
     }
 
     @DeleteMapping
-    public void delete(String id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable("id") String id) {
         service.delete(id);
+
+        ApiResponse<Void> response = ApiResponse.of(null, "User deleted successfully");
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(response);
     }
 }

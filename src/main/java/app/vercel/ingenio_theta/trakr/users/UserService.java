@@ -1,18 +1,16 @@
 package app.vercel.ingenio_theta.trakr.users;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
+import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @Service
 public class UserService implements IUserService {
-    private Logger logger = LoggerFactory.getLogger(UserService.class);
-
     private UserRepository repository;
     private UserMapper mapper;
 
@@ -23,9 +21,14 @@ public class UserService implements IUserService {
 
     @Override
     public Page<UserResponse> findAll(GetUsersDto query) {
-        logger.info(query.toString());
-        Page<User> page = repository.findAll(query.toPageable());
-        
+        Pageable pageable = query.toPageable();
+
+        if (pageable == null) {
+            throw new IllegalArgumentException("PageRequest cannot be null");
+        }
+
+        Page<User> page = repository.findAll(pageable);
+
         return page.map(mapper::toUserResponse);
     }
 
@@ -42,12 +45,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse create(User user) {
-        if (user == null) {
-            return null;
-        }
-        User createdUser = repository.save(user);
+    public UserResponse create(CreateUserDto user) {
+        User newUser = mapper.toUser(user);
 
+        User createdUser = repository.save(newUser);
         return mapper.toUserResponse(createdUser);
     }
 
