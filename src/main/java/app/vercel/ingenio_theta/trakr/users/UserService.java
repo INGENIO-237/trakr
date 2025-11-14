@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ConflictException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
@@ -46,6 +47,12 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponse create(CreateUserDto user) {
+        var existingUser = repository.findByEmail(user.email());
+
+        if (existingUser.isPresent()) {
+            throw new ConflictException("User with email '" + user.email() + "' already exists");
+        }
+
         User newUser = mapper.toUser(user);
 
         User createdUser = repository.save(newUser);
