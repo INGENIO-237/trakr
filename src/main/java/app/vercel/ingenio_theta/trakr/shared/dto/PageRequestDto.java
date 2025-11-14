@@ -3,6 +3,7 @@ package app.vercel.ingenio_theta.trakr.shared.dto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import lombok.Data;
 
@@ -14,7 +15,10 @@ public class PageRequestDto {
     private String sortDir = "asc";
 
     public Pageable toPageable() {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
+        Direction direction = sortDir.equals("asc") ? Sort.Direction.fromString("asc")
+                : Sort.Direction.fromString("desc");
+
+        Sort sort = Sort.by(direction, sortBy);
 
         return PageRequest.of(page, size, sort);
     }
