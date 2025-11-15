@@ -24,6 +24,8 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .country(user.getCountry())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
