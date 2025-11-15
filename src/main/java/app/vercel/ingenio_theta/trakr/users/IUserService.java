@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
+import app.vercel.ingenio_theta.trakr.users.dtos.UpdateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 public interface IUserService {
@@ -13,7 +14,7 @@ public interface IUserService {
 
     UserResponse create(CreateUserDto user);
 
-    UserResponse update(User user, String id);
+    UserResponse update(UpdateUserDto update, String id);
 
     void delete(String id);
 }
