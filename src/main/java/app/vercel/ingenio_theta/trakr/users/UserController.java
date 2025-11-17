@@ -19,6 +19,7 @@ import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
+import app.vercel.ingenio_theta.trakr.users.dtos.UpdateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @RestController
@@ -55,9 +56,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping
-    public UserResponse update(User user, String id) {
-        return service.update(user, id);
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> update(@Validated @RequestBody UpdateUserDto update,
+            @PathVariable("id") String id) {
+        UserResponse updatedUser = service.update(update, id);
+
+        ApiResponse<UserResponse> response = ApiResponse.of(updatedUser, "User updated successfully");
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
