@@ -1,26 +1,43 @@
 package app.vercel.ingenio_theta.trakr.users;
 
-import org.springframework.lang.Nullable;
+import java.time.LocalDateTime;
 
-import app.vercel.ingenio_theta.trakr.accounts.Account;
-import jakarta.persistence.Column;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "users")
 @Data
-@EqualsAndHashCode(callSuper = false)
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends Account {
-    @Nullable
-    @Column(nullable = true)
-    private String country;
+@EntityListeners(AuditingEntityListener.class)
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected String id;
+
+    protected String email;
+
+    protected String name;
+
+    protected String password;
+
+    @CreatedDate
+    protected LocalDateTime createdAt;
+
+    @LastModifiedDate
+    protected LocalDateTime updatedAt;
 }
