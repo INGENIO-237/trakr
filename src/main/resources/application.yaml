@@ -13,3 +13,7 @@ spring:
     properties:
       hibernate:
         '[format_sql]': true
+
+
+jwt:
+  secret: cFA5v7CmIv1Z1N1wCuLxV/woQ0z9quBuf5MknivXaIU=
