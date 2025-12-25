@@ -2,6 +2,7 @@ package app.vercel.ingenio_theta.trakr.users;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,10 @@ import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @Service
 public class UserService implements IUserService {
+    @Autowired
     private UserRepository repository;
+    @Autowired
     private UserMapper mapper;
-
-    public UserService(UserRepository repository, UserMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     @Override
     public Page<UserResponse> findAll(GetUsersDto query) {
@@ -58,6 +56,7 @@ public class UserService implements IUserService {
 
         User newUser = mapper.toEntity(user);
 
+        @SuppressWarnings("null")
         User createdUser = repository.save(newUser);
         return mapper.toResponse(createdUser);
     }
@@ -84,6 +83,7 @@ public class UserService implements IUserService {
             requestedUser.setPassword(update.password());
         }
 
+        @SuppressWarnings("null")
         User updatedUser = repository.save(requestedUser);
 
         return mapper.toResponse(updatedUser);
