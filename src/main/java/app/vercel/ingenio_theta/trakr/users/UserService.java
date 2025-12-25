@@ -86,7 +86,7 @@ public class UserService implements IUserService {
         }
 
         if (update.password() != null) {
-            requestedUser.setPassword(update.password());
+            requestedUser.setPassword(encoder.encode(update.password()));
         }
 
         @SuppressWarnings("null")
