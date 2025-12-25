@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ConflictException;
@@ -20,6 +21,9 @@ public class UserService implements IUserService {
     private UserRepository repository;
     @Autowired
     private UserMapper mapper;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public Page<UserResponse> findAll(GetUsersDto query) {
@@ -50,14 +54,16 @@ public class UserService implements IUserService {
     public UserResponse create(CreateUserDto user) {
         Optional<User> existingUser = repository.findByEmail(user.email());
 
-        if (existingUser != null && existingUser.isPresent()) {
+        if (existingUser.isPresent()) {
             throw new ConflictException("This email address is already taken");
         }
 
         User newUser = mapper.toEntity(user);
 
-        @SuppressWarnings("null")
+        newUser.password = encoder.encode(newUser.password);
+
         User createdUser = repository.save(newUser);
+
         return mapper.toResponse(createdUser);
     }
 

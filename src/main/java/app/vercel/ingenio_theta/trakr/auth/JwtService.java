@@ -16,6 +16,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,7 +27,9 @@ public class JwtService {
     private final int JWT_EXPIRY = 1000 * 60 * 30; // 30 minutes
 
     private Key getKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private JwtBuilder buildJwt(String subject) {
@@ -44,7 +47,7 @@ public class JwtService {
 
     public String generateToken(String subject, Map<String, Object> claims) {
         return buildJwt(subject)
-                .setClaims(claims)
+                .addClaims(claims)
                 .compact();
     }
 
@@ -58,6 +61,7 @@ public class JwtService {
 
     private <T> T extractClaim(String token, Function<Claims, T> resolver) {
         Claims claims = extractClaims(token);
+
         return resolver.apply(claims);
     }
 
@@ -74,12 +78,16 @@ public class JwtService {
     }
 
     public boolean validateToken(String token) {
-        return hasNotExpired(token);
+        try {
+            return hasNotExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Authentication generateAuthenticationToken(UserDetails userDetails, HttpServletRequest request) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails.getUsername(), null, userDetails.getAuthorities());
+                userDetails, null, userDetails.getAuthorities());
 
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
