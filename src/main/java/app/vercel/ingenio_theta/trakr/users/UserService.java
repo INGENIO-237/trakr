@@ -2,8 +2,10 @@ package app.vercel.ingenio_theta.trakr.users;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ConflictException;
@@ -15,13 +17,13 @@ import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @Service
 public class UserService implements IUserService {
+    @Autowired
     private UserRepository repository;
+    @Autowired
     private UserMapper mapper;
 
-    public UserService(UserRepository repository, UserMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public Page<UserResponse> findAll(GetUsersDto query) {
@@ -33,7 +35,7 @@ public class UserService implements IUserService {
 
         Page<User> page = repository.findAll(pageable);
 
-        return page.map(mapper::toUserResponse);
+        return mapper.toResponses(page);
     }
 
     @Override
@@ -45,21 +47,24 @@ public class UserService implements IUserService {
         User user = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with ID '" + id + "' not found"));
 
-        return mapper.toUserResponse(user);
+        return mapper.toResponse(user);
     }
 
     @Override
     public UserResponse create(CreateUserDto user) {
         Optional<User> existingUser = repository.findByEmail(user.email());
 
-        if (existingUser != null) {
-            throw new ConflictException("User wiil '" + user.email() + "' already exists");
+        if (existingUser.isPresent()) {
+            throw new ConflictException("This email address is already taken");
         }
 
-        User newUser = mapper.toUser(user);
+        User newUser = mapper.toEntity(user);
+
+        newUser.password = encoder.encode(newUser.password);
 
         User createdUser = repository.save(newUser);
-        return mapper.toUserResponse(createdUser);
+
+        return mapper.toResponse(createdUser);
     }
 
     @Override
@@ -80,17 +85,14 @@ public class UserService implements IUserService {
             requestedUser.setEmail(update.email());
         }
 
-        if (update.country() != null) {
-            requestedUser.setCountry(update.country());
-        }
-
         if (update.password() != null) {
             requestedUser.setPassword(update.password());
         }
 
+        @SuppressWarnings("null")
         User updatedUser = repository.save(requestedUser);
 
-        return mapper.toUserResponse(updatedUser);
+        return mapper.toResponse(updatedUser);
     }
 
     @Override

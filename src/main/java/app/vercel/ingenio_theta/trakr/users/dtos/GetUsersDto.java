@@ -8,5 +8,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class GetUsersDto extends PageRequestDto {
     private String country;
-    private String email;
 }
