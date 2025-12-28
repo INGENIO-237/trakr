@@ -50,16 +50,8 @@ public class BudgetService implements IBudgetService {
 
     @Override
     public BudgetResponse create(CreateBudgetDto budget) throws ApiException {
-        LocalDate startDate = budget.getStartDate();
-        LocalDate endDate = budget.getEndDate();
+        validateBudgetDates(budget.getStartDate(), budget.getEndDate());
 
-        if (startDate.equals(endDate)) {
-            throw new BadRequestException("Budget's start and end dates cannot be the same");
-        }
-
-        if (startDate.isAfter(endDate)) {
-            throw new BadRequestException("Budget's start date must be before end date");
-        }
         // TODO: Ensure there's not a budget defined for the same time interval
         Budget newBudget = mapper.toEntity(budget);
 
@@ -79,6 +71,16 @@ public class BudgetService implements IBudgetService {
     @Override
     public void delete(String id) {
         repository.deleteById(id);
+    }
+
+    private void validateBudgetDates(LocalDate startDate, LocalDate endDate) throws ApiException {
+        if (startDate.equals(endDate)) {
+            throw new BadRequestException("Budget's start and end dates cannot be the same");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new BadRequestException("Budget's start date must be before end date");
+        }
     }
 
 }
