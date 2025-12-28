@@ -6,13 +6,14 @@ import app.vercel.ingenio_theta.trakr.budgets.dtos.BudgetResponse;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.CreateBudgetDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.GetBudgetsDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.UpdateBudgetDto;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 
 public interface IBudgetService {
     Page<BudgetResponse> findAll(GetBudgetsDto query);
 
     BudgetResponse findById(String id);
 
-    BudgetResponse create(CreateBudgetDto budget);
+    BudgetResponse create(CreateBudgetDto budget) throws ApiException;
 
     BudgetResponse update(String id, UpdateBudgetDto update);
 

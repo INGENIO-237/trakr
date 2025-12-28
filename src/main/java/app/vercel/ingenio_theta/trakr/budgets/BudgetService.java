@@ -1,5 +1,6 @@
 package app.vercel.ingenio_theta.trakr.budgets;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import app.vercel.ingenio_theta.trakr.budgets.dtos.BudgetResponse;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.CreateBudgetDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.GetBudgetsDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.UpdateBudgetDto;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.common.BadRequestException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 
 @Service
 public class BudgetService implements IBudgetService {
@@ -46,7 +49,17 @@ public class BudgetService implements IBudgetService {
     }
 
     @Override
-    public BudgetResponse create(CreateBudgetDto budget) {
+    public BudgetResponse create(CreateBudgetDto budget) throws ApiException {
+        LocalDate startDate = budget.getStartDate();
+        LocalDate endDate = budget.getEndDate();
+
+        if (startDate.equals(endDate)) {
+            throw new BadRequestException("Budget's start and end dates cannot be the same");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new BadRequestException("Budget's start date must be before end date");
+        }
         // TODO: Ensure there's not a budget defined for the same time interval
         Budget newBudget = mapper.toEntity(budget);
 
