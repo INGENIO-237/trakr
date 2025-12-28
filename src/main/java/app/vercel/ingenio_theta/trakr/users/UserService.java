@@ -60,7 +60,7 @@ public class UserService implements IUserService {
 
         User newUser = mapper.toEntity(user);
 
-        newUser.password = encoder.encode(newUser.password);
+        newUser.setPassword(encoder.encode(newUser.getPassword()));
 
         User createdUser = repository.save(newUser);
 

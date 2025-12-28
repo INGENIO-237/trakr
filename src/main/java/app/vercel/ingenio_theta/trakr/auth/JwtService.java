@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET;
-    private final int JWT_EXPIRY = 1000 * 60 * 30; // 30 minutes
+    private final int JWT_EXPIRY = 1000 * 60 * 60; // 1 hour
 
     private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
