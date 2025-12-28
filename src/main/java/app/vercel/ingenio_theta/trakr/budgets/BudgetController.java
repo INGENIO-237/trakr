@@ -17,6 +17,7 @@ import app.vercel.ingenio_theta.trakr.budgets.dtos.BudgetResponse;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.CreateBudgetDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.GetBudgetsDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.UpdateBudgetDto;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import jakarta.validation.Valid;
@@ -47,7 +48,7 @@ public class BudgetController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget) {
+    public ResponseEntity<ApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget) throws ApiException {
         BudgetResponse budgetResponse = service.create(budget);
 
         ApiResponse<BudgetResponse> response = ApiResponse.of(budgetResponse, "Budget created successfully");

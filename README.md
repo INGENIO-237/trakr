@@ -1,10 +1,10 @@
 # Trakr
 
-A budget management and expenses tracker application built with Spring Boot.
+A budget management and expenses tracker REST API built with Spring Boot.
 
 ## Overview
 
-Trakr is a web-based application designed to help users manage their budgets and track expenses efficiently. Built using modern Java technologies and Spring Boot framework.
+Trakr is a REST API application for managing budgets and tracking expenses. Features JWT-based authentication, user management, and budget operations with PostgreSQL persistence.
 
 ## Tech Stack
 
@@ -12,9 +12,13 @@ Trakr is a web-based application designed to help users manage their budgets and
 - **Spring Boot 3.5.7**
 - **Spring Data JPA** - Database operations
 - **Spring Web** - REST API endpoints
+- **Spring Security** - Authentication & authorization
 - **Spring Boot Actuator** - Application monitoring
+- **Spring Validation** - Input validation
 - **PostgreSQL** - Production database
 - **H2 Database** - Testing database
+- **JWT (JJWT)** - Token-based authentication
+- **MapStruct** - Object mapping
 - **Lombok** - Code generation
 - **Maven** - Build tool
 
@@ -47,13 +51,43 @@ cd trakr
 
 The application will start on `http://localhost:8080`
 
+## Features
+
+- **User Management**: Registration, authentication, and profile management
+- **JWT Authentication**: Secure token-based authentication
+- **Budget Management**: Create, read, update, and delete budgets
+- **RESTful API**: Clean REST endpoints with proper HTTP status codes
+- **Exception Handling**: Centralized error handling with custom exceptions
+- **Data Validation**: Input validation with custom DTOs
+- **Pagination**: Paginated responses for list endpoints
+
+## API Endpoints
+
+### Authentication
+- `POST /auth/login` - User login
+
+### Users
+- `GET /users` - Get all users (paginated)
+- `GET /users/{id}` - Get user by ID
+- `POST /users` - Create new user
+- `PUT /users/{id}` - Update user
+- `DELETE /users/{id}` - Delete user
+
+### Budgets
+- `GET /budgets` - Get all budgets (paginated)
+- `GET /budgets/{id}` - Get budget by ID
+- `POST /budgets` - Create new budget
+- `PUT /budgets/{id}` - Update budget
+- `DELETE /budgets/{id}` - Delete budget
+
 ## Configuration
 
-The application uses `application.properties` for configuration. Key settings:
+The application uses `application.yaml` for configuration. Key settings:
 
 - Application name: `trakr`
-- Default profile uses H2 for testing
-- Production profile should be configured with PostgreSQL
+- PostgreSQL database connection
+- JWT secret configuration
+- JPA/Hibernate settings
 
 ## Development
 
@@ -62,17 +96,24 @@ The application uses `application.properties` for configuration. Key settings:
 ```
 src/
 ├── main/
-│   ├── java/
-│   │   └── app/vercel/ingenio_theta/trakr/
-│   │       └── TrakrApplication.java
+│   ├── java/app/vercel/ingenio_theta/trakr/
+│   │   ├── auth/                    # Authentication & JWT
+│   │   ├── budgets/                 # Budget management
+│   │   ├── config/                  # Security configuration
+│   │   ├── shared/                  # Shared utilities
+│   │   │   ├── dto/                 # Common DTOs
+│   │   │   ├── exceptions/          # Exception handling
+│   │   │   └── response/            # Response wrappers
+│   │   ├── users/                   # User management
+│   │   └── TrakrApplication.java
 │   └── resources/
-│       ├── application.properties
-│       ├── static/
-│       └── templates/
+│       └── application.yaml
 └── test/
-    └── java/
-        └── app/vercel/ingenio_theta/trakr/
-            └── TrakrApplicationTests.java
+    ├── java/app/vercel/ingenio_theta/trakr/
+    │   ├── users/                   # User tests
+    │   └── TrakrApplicationTests.java
+    └── resources/
+        └── application.yaml
 ```
 
 ### Running Tests
