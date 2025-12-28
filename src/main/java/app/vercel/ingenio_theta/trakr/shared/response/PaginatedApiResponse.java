@@ -25,6 +25,7 @@ public class PaginatedApiResponse<T> extends Response {
                 .pages(page.getTotalPages())
                 .first(page.isFirst())
                 .last(page.isLast())
+                .empty(page.isEmpty())
                 .build();
 
         return PaginatedApiResponse.<T>builder()

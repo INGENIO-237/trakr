@@ -40,14 +40,14 @@ public class ApiExceptionHandler {
                         .status(ex.getStatus())
                         .timestamp(ex.getTimestamp())
                         .build());
-                    }
+    }
 
-                    @ExceptionHandler(Exception.class)
-                    public ResponseEntity<ExceptionResponse> handleInternalServerError(Exception ex) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleInternalServerError(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ExceptionResponse
-                .builder()
+                        .builder()
                         .message("Internal server error")
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .timestamp(LocalDateTime.now())

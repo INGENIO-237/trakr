@@ -16,4 +16,5 @@ public class PageInfo {
     private int pages;
     private boolean first;
     private boolean last;
+    private boolean empty;
 }
