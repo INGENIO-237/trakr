@@ -9,7 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import app.vercel.ingenio_theta.trakr.auth.dtos.LoginDto;
+import app.vercel.ingenio_theta.trakr.auth.dtos.LoginResponse;
+import app.vercel.ingenio_theta.trakr.auth.dtos.RegisterDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.UnauthorizedException;
+import app.vercel.ingenio_theta.trakr.users.UserService;
+import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @Service
 public class AuthService {
@@ -19,11 +23,17 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public String register() {
-        return "Register";
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AuthMapper mapper;
+
+    public UserResponse register(RegisterDto dto) {
+        return userService.create(mapper.toCreateUserDto(dto));
     }
 
-    public String login(LoginDto credentials) throws Exception {
+    public LoginResponse login(LoginDto credentials) throws Exception {
         try {
             Authentication authToken = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(credentials.email(),
@@ -33,7 +43,9 @@ public class AuthService {
                 throw new UnauthorizedException("Invalid login credentials");
             }
 
-            return jwtService.generateToken(credentials.email());
+            String accessToken = jwtService.generateToken(credentials.email());
+
+            return new LoginResponse(accessToken);
 
         } catch (Exception e) {
             throw new AuthenticationException("Invalid login credentials");

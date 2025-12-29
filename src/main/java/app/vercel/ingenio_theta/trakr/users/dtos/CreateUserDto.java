@@ -10,5 +10,5 @@ public record CreateUserDto(
 
         @NotBlank(message = "Name must be provided") @Length(min = 2, message = "Name must be at least 2 characters long") String name,
 
-        @NotBlank(message = "Password must be provided") @Length(min = 6, message = "Password must be at least 2 characters long") String password) {
+        @NotBlank(message = "Password must be provided") @Length(min = 6, message = "Password must be at least 6 characters long") String password) {
 }
