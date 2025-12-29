@@ -14,6 +14,7 @@ import app.vercel.ingenio_theta.trakr.budgets.dtos.CreateBudgetDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.GetBudgetsDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.UpdateBudgetDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.BadRequestException;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 
@@ -64,12 +65,28 @@ public class BudgetService implements IBudgetService {
 
     @Override
     public BudgetResponse update(String id, UpdateBudgetDto update) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        Optional<Budget> existingBudget = repository.findById(id);
+
+        if (existingBudget.isEmpty()) {
+            throw new NotFoundException("Budget with id: " + id + " not found");
+        }
+
+        validateOwnership(id);
+
+        validateBudgetDates(update.getStartDate(), update.getEndDate());
+
+        Budget budgetToUpdate = existingBudget.get();
+
+        mapper.updateEntity(update, budgetToUpdate);
+
+        Budget updatedBudget = repository.save(budgetToUpdate);
+
+        return mapper.toResponse(updatedBudget);
     }
 
     @Override
     public void delete(String id) {
+        validateOwnership(id);
         repository.deleteById(id);
     }
 
@@ -80,6 +97,14 @@ public class BudgetService implements IBudgetService {
 
         if (startDate.isAfter(endDate)) {
             throw new BadRequestException("Budget's start date must be before end date");
+        }
+    }
+
+    private void validateOwnership(String budgetId) {
+        Budget budget = repository.findById(budgetId).get();
+
+        if (budget.getUser().getId() != currentUserService.getUser().getId()) {
+            throw new ForbiddenException("You don't have permission to update this budget");
         }
     }
 

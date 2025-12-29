@@ -55,12 +55,16 @@ public class BudgetController {
 
         return ResponseEntity.ok(response);
     }
-
+    
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
-            @RequestBody UpdateBudgetDto update) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public ResponseEntity<ApiResponse<BudgetResponse>> update(@PathVariable("id") String id, @Valid
+    @RequestBody UpdateBudgetDto update) {
+        
+        BudgetResponse budgetResponse = service.update(id, update);
+    
+        ApiResponse<BudgetResponse> response = ApiResponse.of(budgetResponse, "Budget updated successfully");
+    
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

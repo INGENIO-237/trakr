@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ConflictException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
@@ -19,8 +20,12 @@ import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 public class UserService implements IUserService {
     @Autowired
     private UserRepository repository;
+
     @Autowired
     private UserMapper mapper;
+
+    @Autowired
+    private CurrentUserService currentUserService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -52,11 +57,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponse create(CreateUserDto user) {
-        Optional<User> existingUser = repository.findByEmail(user.email());
-
-        if (existingUser.isPresent()) {
-            throw new ConflictException("This email address is already taken");
-        }
+        checkEmailAvailability(user.email());
 
         User newUser = mapper.toEntity(user);
 
@@ -77,19 +78,20 @@ public class UserService implements IUserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User with ID '" + id + "' not found"));
 
-        if (update.name() != null) {
-            requestedUser.setName(update.name());
+        if (requestedUser.getId() != currentUserService.getUser().getId()) {
+            throw new ConflictException("You don't have permission to update this user");
         }
 
         if (update.email() != null) {
-            requestedUser.setEmail(update.email());
+            checkEmailAvailability(update.email());
         }
+
+        mapper.updateEntity(update, requestedUser);
 
         if (update.password() != null) {
             requestedUser.setPassword(encoder.encode(update.password()));
         }
 
-        @SuppressWarnings("null")
         User updatedUser = repository.save(requestedUser);
 
         return mapper.toResponse(updatedUser);
@@ -97,8 +99,24 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        if (id != currentUserService.getUser().getId()) {
+            throw new ConflictException("You don't have permission to delete this user");
+        }
+
         if (id != null) {
             repository.deleteById(id);
+        }
+    }
+
+    private void checkEmailAvailability(String email) {
+        Optional<User> existingUser = repository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            throw new ConflictException("This email address is already taken");
         }
     }
 
