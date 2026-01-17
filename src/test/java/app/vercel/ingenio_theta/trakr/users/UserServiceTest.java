@@ -47,6 +47,7 @@ public class UserServiceTest {
             .updatedAt(user.getUpdatedAt())
             .build();
 
+    @SuppressWarnings("null")
     @Test
     void testCreate_success() {
         when(repository.findByEmail(dto.email())).thenReturn(Optional.empty());
@@ -62,6 +63,7 @@ public class UserServiceTest {
         verify(repository).save(any(User.class));
     }
 
+    @SuppressWarnings("null")
     @Test
     void testCreate_conflict() {
         when(repository.findByEmail(dto.email())).thenReturn(Optional.of(new User()));
@@ -73,6 +75,7 @@ public class UserServiceTest {
         verify(repository, never()).save(any(User.class));
     }
 
+    @SuppressWarnings("null")
     @Test
     void testFindById_success() {
         when(repository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -92,6 +95,7 @@ public class UserServiceTest {
                 .isInstanceOf(app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException.class);
     }
 
+    @SuppressWarnings("null")
     @Test
     void testFindAll() {
         var user = User.builder().name("John").email("john@example.com").build();
@@ -106,6 +110,7 @@ public class UserServiceTest {
         assertThat(page.getTotalElements()).isEqualTo(1);
     }
 
+    @SuppressWarnings("null")
     @Test
     void testUpdate_success() {
         var existing = User.builder().id("u1").name("John").email("john@example.com").build();

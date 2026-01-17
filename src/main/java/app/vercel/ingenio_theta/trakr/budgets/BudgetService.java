@@ -3,7 +3,6 @@ package app.vercel.ingenio_theta.trakr.budgets;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,29 +16,27 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.common.BadRequestExcepti
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BudgetService implements IBudgetService {
-    @Autowired
-    private BudgetRepository repository;
-
-    @Autowired
-    private BudgetMapper mapper;
-
-    @Autowired
-    private CurrentUserService currentUserService;
+    private final BudgetRepository repository;
+    private final BudgetMapper mapper;
+    private final CurrentUserService currentUserService;
 
     @Override
     public Page<BudgetResponse> findAll(GetBudgetsDto query) {
         Pageable pageable = query.toPageable();
 
-        Page<Budget> budgets = repository.findAll(pageable);
+        Page<Budget> budgets = repository.findByUser(currentUserService.getUser(), pageable);
 
         return mapper.toResponses(budgets);
     }
 
     @Override
     public BudgetResponse findById(String id) {
+        @SuppressWarnings("null")
         Optional<Budget> buget = repository.findById(id);
 
         if (buget.isEmpty()) {
@@ -65,6 +62,7 @@ public class BudgetService implements IBudgetService {
 
     @Override
     public BudgetResponse update(String id, UpdateBudgetDto update) {
+        @SuppressWarnings("null")
         Optional<Budget> existingBudget = repository.findById(id);
 
         if (existingBudget.isEmpty()) {
@@ -79,11 +77,13 @@ public class BudgetService implements IBudgetService {
 
         mapper.updateEntity(update, budgetToUpdate);
 
+        @SuppressWarnings("null")
         Budget updatedBudget = repository.save(budgetToUpdate);
 
         return mapper.toResponse(updatedBudget);
     }
 
+    @SuppressWarnings("null")
     @Override
     public void delete(String id) {
         validateOwnership(id);
@@ -101,6 +101,7 @@ public class BudgetService implements IBudgetService {
     }
 
     private void validateOwnership(String budgetId) {
+        @SuppressWarnings("null")
         Budget budget = repository.findById(budgetId).get();
 
         if (budget.getUser().getId() != currentUserService.getUser().getId()) {

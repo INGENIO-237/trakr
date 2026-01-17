@@ -27,6 +27,7 @@ public class ApiExceptionHandler {
                 .errors(errors)
                 .message("Validation error")
                 .status(HttpStatus.BAD_REQUEST)
+                .timestamp(LocalDateTime.now())
                 .build());
     }
 

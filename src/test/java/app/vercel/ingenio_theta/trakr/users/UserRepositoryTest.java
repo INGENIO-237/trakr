@@ -13,6 +13,7 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository repository;
 
+    @SuppressWarnings("null")
     @Test
     void testFindByEmail() {
         var user = User.builder()

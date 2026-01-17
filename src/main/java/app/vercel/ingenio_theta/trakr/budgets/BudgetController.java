@@ -1,6 +1,5 @@
 package app.vercel.ingenio_theta.trakr.budgets;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +20,13 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("budgets")
 public class BudgetController {
-    @Autowired
-    private IBudgetService service;
+    private final IBudgetService service;
 
     @GetMapping
     public ResponseEntity<PaginatedApiResponse<BudgetResponse>> findAll(@ModelAttribute GetBudgetsDto query) {
@@ -48,22 +48,23 @@ public class BudgetController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget) throws ApiException {
+    public ResponseEntity<ApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget)
+            throws ApiException {
         BudgetResponse budgetResponse = service.create(budget);
 
         ApiResponse<BudgetResponse> response = ApiResponse.of(budgetResponse, "Budget created successfully");
 
         return ResponseEntity.ok(response);
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<BudgetResponse>> update(@PathVariable("id") String id, @Valid
-    @RequestBody UpdateBudgetDto update) {
-        
+    public ResponseEntity<ApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
+            @Valid @RequestBody UpdateBudgetDto update) {
+
         BudgetResponse budgetResponse = service.update(id, update);
-    
+
         ApiResponse<BudgetResponse> response = ApiResponse.of(budgetResponse, "Budget updated successfully");
-    
+
         return ResponseEntity.ok(response);
     }
 
