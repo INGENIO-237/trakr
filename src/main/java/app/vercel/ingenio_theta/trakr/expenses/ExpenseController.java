@@ -18,7 +18,7 @@ import app.vercel.ingenio_theta.trakr.expenses.dtos.CreateExpenseDto;
 import app.vercel.ingenio_theta.trakr.expenses.dtos.GetExpensesDto;
 import app.vercel.ingenio_theta.trakr.expenses.dtos.UpdateExpenseDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
-import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
+import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import jakarta.validation.Valid;
 
@@ -39,30 +39,30 @@ public class ExpenseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ExpenseResponse>> findById(@PathVariable("id") String id) {
+    public ResponseEntity<AppApiResponse<ExpenseResponse>> findById(@PathVariable("id") String id) {
         ExpenseResponse expense = service.findById(id);
 
-        ApiResponse<ExpenseResponse> response = ApiResponse.of(expense, "Expense retrieved successfully");
+        AppApiResponse<ExpenseResponse> response = AppApiResponse.of(expense, "Expense retrieved successfully");
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ExpenseResponse>> create(@Valid @RequestBody CreateExpenseDto expense) throws ApiException {
+    public ResponseEntity<AppApiResponse<ExpenseResponse>> create(@Valid @RequestBody CreateExpenseDto expense) throws ApiException {
         ExpenseResponse expenseResponse = service.create(expense);
 
-        ApiResponse<ExpenseResponse> response = ApiResponse.of(expenseResponse, "Expense created successfully");
+        AppApiResponse<ExpenseResponse> response = AppApiResponse.of(expenseResponse, "Expense created successfully");
 
         return ResponseEntity.ok(response);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ExpenseResponse>> update(@PathVariable("id") String id, @Valid
+    public ResponseEntity<AppApiResponse<ExpenseResponse>> update(@PathVariable("id") String id, @Valid
     @RequestBody UpdateExpenseDto update) {
         
         ExpenseResponse expenseResponse = service.update(id, update);
     
-        ApiResponse<ExpenseResponse> response = ApiResponse.of(expenseResponse, "Expense updated successfully");
+        AppApiResponse<ExpenseResponse> response = AppApiResponse.of(expenseResponse, "Expense updated successfully");
     
         return ResponseEntity.ok(response);
     }

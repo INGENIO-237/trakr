@@ -8,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import app.vercel.ingenio_theta.trakr.budgets.Budget;
+import app.vercel.ingenio_theta.trakr.expenses.models.Expense;
+import app.vercel.ingenio_theta.trakr.incomes.models.Income;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,4 +53,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Budget> budgets;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Expense> expenses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Income> incomes;
 }

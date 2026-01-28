@@ -11,18 +11,18 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse<T> extends Response {
+public class AppApiResponse<T> extends Response {
     private T data;
 
-    public static <T> ApiResponse<T> of(T data, String message) {
-        return ApiResponse.<T>builder()
+    public static <T> AppApiResponse<T> of(T data, String message) {
+        return AppApiResponse.<T>builder()
                 .data(data)
                 .message(message)
                 .build();
     }
 
-    public static <T> ApiResponse<T> of(T data, String message, HttpStatus status) {
-        return ApiResponse.<T>builder()
+    public static <T> AppApiResponse<T> of(T data, String message, HttpStatus status) {
+        return AppApiResponse.<T>builder()
                 .data(data)
                 .message(message)
                 .status(status)

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import app.vercel.ingenio_theta.trakr.auth.dtos.LoginDto;
 import app.vercel.ingenio_theta.trakr.auth.dtos.LoginResponse;
 import app.vercel.ingenio_theta.trakr.auth.dtos.RegisterDto;
-import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
+import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 import jakarta.validation.Valid;
 
@@ -22,19 +22,19 @@ public class AuthController {
     private AuthService service;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterDto dto) {
+    public ResponseEntity<AppApiResponse<UserResponse>> register(@Valid @RequestBody RegisterDto dto) {
         UserResponse user = service.register(dto);
 
-        ApiResponse<UserResponse> response = ApiResponse.of(user, "User registered successfully", HttpStatus.CREATED);
+        AppApiResponse<UserResponse> response = AppApiResponse.of(user, "User registered successfully", HttpStatus.CREATED);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginDto credentials) throws Exception {
+    public ResponseEntity<AppApiResponse<LoginResponse>> login(@Valid @RequestBody LoginDto credentials) throws Exception {
         LoginResponse tokens = service.login(credentials);
 
-        ApiResponse<LoginResponse> response = ApiResponse.of(tokens, "Logged in successfully");
+        AppApiResponse<LoginResponse> response = AppApiResponse.of(tokens, "Logged in successfully");
 
         return ResponseEntity.ok(response);
     }

@@ -15,13 +15,17 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "budgets", ignore = true)
+    @Mapping(target = "expenses", ignore = true)
+    @Mapping(target = "incomes", ignore = true)
     User toEntity(CreateUserDto dto);
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "budgets", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "budgets", ignore = true)
+    @Mapping(target = "expenses", ignore = true)
+    @Mapping(target = "incomes", ignore = true)
     void updateEntity(UpdateUserDto dto, @MappingTarget User user);
 
     UserResponse toResponse(User user);
