@@ -22,9 +22,9 @@ public interface ExpenseMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void updateEntity(UpdateExpenseDto dto, @MappingTarget Expense budget);
+    void updateEntity(UpdateExpenseDto dto, @MappingTarget Expense expense);
 
-    ExpenseResponse toResponse(Expense budget);
+    ExpenseResponse toResponse(Expense expense);
 
     default Page<ExpenseResponse> toResponses(Page<Expense> page) {
         return page.map(this::toResponse);

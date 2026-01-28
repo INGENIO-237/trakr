@@ -17,7 +17,7 @@ import app.vercel.ingenio_theta.trakr.budgets.dtos.CreateBudgetDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.GetBudgetsDto;
 import app.vercel.ingenio_theta.trakr.budgets.dtos.UpdateBudgetDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
-import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
+import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,31 +39,31 @@ public class BudgetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<BudgetResponse>> findById(@PathVariable("id") String id) {
+    public ResponseEntity<AppApiResponse<BudgetResponse>> findById(@PathVariable("id") String id) {
         BudgetResponse budget = service.findById(id);
 
-        ApiResponse<BudgetResponse> response = ApiResponse.of(budget, "Budget retrieved successfully");
+        AppApiResponse<BudgetResponse> response = AppApiResponse.of(budget, "Budget retrieved successfully");
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget)
+    public ResponseEntity<AppApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget)
             throws ApiException {
         BudgetResponse budgetResponse = service.create(budget);
 
-        ApiResponse<BudgetResponse> response = ApiResponse.of(budgetResponse, "Budget created successfully");
+        AppApiResponse<BudgetResponse> response = AppApiResponse.of(budgetResponse, "Budget created successfully");
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
+    public ResponseEntity<AppApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
             @Valid @RequestBody UpdateBudgetDto update) {
 
         BudgetResponse budgetResponse = service.update(id, update);
 
-        ApiResponse<BudgetResponse> response = ApiResponse.of(budgetResponse, "Budget updated successfully");
+        AppApiResponse<BudgetResponse> response = AppApiResponse.of(budgetResponse, "Budget updated successfully");
 
         return ResponseEntity.ok(response);
     }

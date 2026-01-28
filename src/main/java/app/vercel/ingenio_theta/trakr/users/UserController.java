@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.vercel.ingenio_theta.trakr.shared.response.ApiResponse;
+import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
@@ -38,39 +38,39 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> findById(@PathVariable("id") String id) {
+    public ResponseEntity<AppApiResponse<UserResponse>> findById(@PathVariable("id") String id) {
         UserResponse user = service.findById(id);
 
-        ApiResponse<UserResponse> response = ApiResponse.of(user, "User retrieved successdully");
+        AppApiResponse<UserResponse> response = AppApiResponse.of(user, "User retrieved successdully");
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponse>> create(@Validated @RequestBody CreateUserDto user) {
+    public ResponseEntity<AppApiResponse<UserResponse>> create(@Validated @RequestBody CreateUserDto user) {
         UserResponse createdUser = service.create(user);
 
-        ApiResponse<UserResponse> response = ApiResponse.of(createdUser, "User created successfully",
+        AppApiResponse<UserResponse> response = AppApiResponse.of(createdUser, "User created successfully",
                 HttpStatus.CREATED);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> update(@Validated @RequestBody UpdateUserDto update,
+    public ResponseEntity<AppApiResponse<UserResponse>> update(@Validated @RequestBody UpdateUserDto update,
             @PathVariable("id") String id) {
         UserResponse updatedUser = service.update(update, id);
 
-        ApiResponse<UserResponse> response = ApiResponse.of(updatedUser, "User updated successfully");
+        AppApiResponse<UserResponse> response = AppApiResponse.of(updatedUser, "User updated successfully");
 
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable("id") String id) {
+    public ResponseEntity<AppApiResponse<Void>> delete(@PathVariable("id") String id) {
         service.delete(id);
 
-        ApiResponse<Void> response = ApiResponse.of(null, "User deleted successfully");
+        AppApiResponse<Void> response = AppApiResponse.of(null, "User deleted successfully");
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

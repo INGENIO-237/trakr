@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateExpenseDto {
-    @Min(value = 50, message = "The minimum amount for a expense is XAF 50")
+    @Min(value = 50, message = "The minimum amount for an expense is XAF 50")
     private Double amount;
 
     private String description;
