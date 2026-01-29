@@ -3,6 +3,7 @@ package app.vercel.ingenio_theta.trakr.budgets;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BudgetService implements IBudgetService {
+    @Autowired
     private final BudgetRepository repository;
+
+    @Autowired
     private final BudgetMapper mapper;
+
+    @Autowired
     private final CurrentUserService currentUserService;
 
     @Override

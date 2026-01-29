@@ -2,14 +2,15 @@ package app.vercel.ingenio_theta.trakr.incomes;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.CreateIncomeDto;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.GetIncomesDto;
+import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.UpdateIncomeDto;
 import app.vercel.ingenio_theta.trakr.incomes.models.Income;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
@@ -20,8 +21,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IncomeService implements IIncomeService {
+    @Autowired
     private IncomeRepository repository;
+
+    @Autowired
     private IncomeMapper mapper;
+
+    @Autowired
     private CurrentUserService currentUserService;
 
     @Override

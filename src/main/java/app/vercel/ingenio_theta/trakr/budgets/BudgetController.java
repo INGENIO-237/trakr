@@ -19,16 +19,26 @@ import app.vercel.ingenio_theta.trakr.budgets.dtos.UpdateBudgetDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("budgets")
+@Tag(name = "Budgets", description = "Endpoints for managing budgets")
 public class BudgetController {
     private final IBudgetService service;
 
     @GetMapping
+    @Operation(summary = "Get all budgets", description = "Retrieve a paginated list of all budgets with optional filtering parameters.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Budgets retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters")
+    })
     public ResponseEntity<PaginatedApiResponse<BudgetResponse>> findAll(@ModelAttribute GetBudgetsDto query) {
         Page<BudgetResponse> budgets = service.findAll(query);
 
@@ -39,6 +49,13 @@ public class BudgetController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get budget by ID", description = "Retrieve a specific budget by its unique ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Budget retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Budget not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
+
+    })
     public ResponseEntity<AppApiResponse<BudgetResponse>> findById(@PathVariable("id") String id) {
         BudgetResponse budget = service.findById(id);
 
@@ -48,6 +65,11 @@ public class BudgetController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new budget", description = "Create a new budget with the provided details.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Budget created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid budget data provided")
+    })
     public ResponseEntity<AppApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget)
             throws ApiException {
         BudgetResponse budgetResponse = service.create(budget);
@@ -58,6 +80,13 @@ public class BudgetController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update an existing budget", description = "Update the details of an existing budget by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Budget updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid budget data provided"),
+            @ApiResponse(responseCode = "404", description = "Budget not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
+    })
     public ResponseEntity<AppApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
             @Valid @RequestBody UpdateBudgetDto update) {
 
@@ -69,6 +98,12 @@ public class BudgetController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a budget", description = "Delete an existing budget by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Budget deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Budget not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
+    })
     public void delete(@PathVariable("id") String id) {
         service.delete(id);
     }
