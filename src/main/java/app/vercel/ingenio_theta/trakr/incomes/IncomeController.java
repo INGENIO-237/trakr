@@ -21,16 +21,14 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("incomes")
 @Tag(name = "Incomes", description = "Incomes API endpoints")
-@SecurityRequirement(name = "bearerAuth")
 public class IncomeController {
     @Autowired
     private IIncomeService service;
