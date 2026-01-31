@@ -1,7 +1,5 @@
 package app.vercel.ingenio_theta.trakr.auth;
 
-import javax.security.sasl.AuthenticationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,7 +46,7 @@ public class AuthService {
             return new LoginResponse(accessToken);
 
         } catch (Exception e) {
-            throw new AuthenticationException("Invalid login credentials");
+            throw new UnauthorizedException("Invalid login credentials");
         }
 
     }
