@@ -4,11 +4,12 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record CreateUserDto(
-        @NotBlank(message = "Email address must be provided") @Email(message = "Invalid email format") String email,
+                @NotBlank(message = "Email address must be provided") @Email(message = "Invalid email format") String email,
 
-        @NotBlank(message = "Name must be provided") @Length(min = 2, message = "Name must be at least 2 characters long") String name,
+                @NotBlank(message = "Name must be provided") @Length(min = 2, message = "Name must be at least 2 characters long") String name,
 
-        @NotBlank(message = "Password must be provided") @Length(min = 6, message = "Password must be at least 6 characters long") String password) {
+                @NotBlank(message = "Password must be provided") @Length(min = 6, message = "Password must be at least 6 characters long") @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=.,?!])(?=\\S+$).*$", message = "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character") String password) {
 }
