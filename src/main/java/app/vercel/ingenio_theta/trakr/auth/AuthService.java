@@ -3,7 +3,7 @@ package app.vercel.ingenio_theta.trakr.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import app.vercel.ingenio_theta.trakr.auth.dtos.LoginDto;
@@ -31,21 +31,16 @@ public class AuthService {
         return userService.create(mapper.toCreateUserDto(dto));
     }
 
-    public LoginResponse login(LoginDto credentials) throws Exception {
+    public LoginResponse login(LoginDto credentials) throws UnauthorizedException {
         try {
-            Authentication authToken = authenticationManager
+            authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(credentials.email(),
                             credentials.password()));
-
-            if (!authToken.isAuthenticated()) {
-                throw new UnauthorizedException("Invalid login credentials");
-            }
 
             String accessToken = jwtService.generateToken(credentials.email());
 
             return new LoginResponse(accessToken);
-
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             throw new UnauthorizedException("Invalid login credentials");
         }
 
