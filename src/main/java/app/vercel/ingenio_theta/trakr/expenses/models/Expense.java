@@ -3,7 +3,7 @@ package app.vercel.ingenio_theta.trakr.expenses.models;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import app.vercel.ingenio_theta.trakr.users.User;
@@ -41,7 +41,7 @@ public class Expense {
     private LocalDateTime createdAt;
 
     @Column(insertable = false)
-    @LastModifiedBy
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)

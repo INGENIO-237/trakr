@@ -3,7 +3,6 @@ package app.vercel.ingenio_theta.trakr.budgets;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,19 +16,21 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.common.BadRequestExcepti
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class BudgetService implements IBudgetService {
-    @Autowired
     private final BudgetRepository repository;
-
-    @Autowired
     private final BudgetMapper mapper;
-
-    @Autowired
     private final CurrentUserService currentUserService;
+
+    public BudgetService(
+            BudgetRepository repository,
+            BudgetMapper mapper,
+            CurrentUserService currentUserService) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.currentUserService = currentUserService;
+    }
 
     @Override
     public Page<BudgetResponse> findAll(GetBudgetsDto query) {

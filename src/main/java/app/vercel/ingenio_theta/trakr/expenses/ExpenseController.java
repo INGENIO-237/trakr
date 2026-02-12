@@ -1,6 +1,5 @@
 package app.vercel.ingenio_theta.trakr.expenses;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.vercel.ingenio_theta.trakr.expenses.dtos.ExpenseResponse;
 import app.vercel.ingenio_theta.trakr.expenses.dtos.CreateExpenseDto;
+import app.vercel.ingenio_theta.trakr.expenses.dtos.ExpenseResponse;
 import app.vercel.ingenio_theta.trakr.expenses.dtos.GetExpensesDto;
 import app.vercel.ingenio_theta.trakr.expenses.dtos.UpdateExpenseDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
 import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.shared.response.PaginatedApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -30,8 +29,11 @@ import jakarta.validation.Valid;
 @RequestMapping("expenses")
 @Tag(name = "Expenses", description = "Endpoints for managing expenses")
 public class ExpenseController {
-    @Autowired
     private IExpenseService service;
+
+    public ExpenseController(IExpenseService service) {
+        this.service = service;
+    }
 
     @GetMapping
     @Operation(summary = "Get all expenses", description = "Retrieve a paginated list of all expenses with optional filtering parameters.")

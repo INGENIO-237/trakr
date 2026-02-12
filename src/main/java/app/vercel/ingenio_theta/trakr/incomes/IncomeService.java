@@ -2,7 +2,6 @@ package app.vercel.ingenio_theta.trakr.incomes;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,14 +20,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IncomeService implements IIncomeService {
-    @Autowired
     private IncomeRepository repository;
-
-    @Autowired
     private IncomeMapper mapper;
-
-    @Autowired
     private CurrentUserService currentUserService;
+
+    public IncomeService(IncomeRepository repository, IncomeMapper mapper, CurrentUserService currentUserService) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.currentUserService = currentUserService;
+    }
 
     @Override
     public Page<IncomeResponse> findAll(final GetIncomesDto query) {
@@ -41,9 +41,9 @@ public class IncomeService implements IIncomeService {
 
     @Override
     public IncomeResponse findById(final String incomeId) {
-        final Income xpense = getValidatedExistingIncome(incomeId);
+        final Income income = getValidatedExistingIncome(incomeId);
 
-        return mapper.toResponse(xpense);
+        return mapper.toResponse(income);
     }
 
     @Override

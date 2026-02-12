@@ -2,7 +2,6 @@ package app.vercel.ingenio_theta.trakr.users;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,17 +17,20 @@ import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @Service
 public class UserService implements IUserService {
-    @Autowired
     private UserRepository repository;
 
-    @Autowired
     private UserMapper mapper;
 
-    @Autowired
     private CurrentUserService currentUserService;
 
-    @Autowired
     private PasswordEncoder encoder;
+
+    public UserService(UserRepository repository, UserMapper mapper, CurrentUserService currentUserService, PasswordEncoder encoder) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.currentUserService = currentUserService;
+        this.encoder = encoder;
+    }
 
     @Override
     public Page<UserResponse> findAll(GetUsersDto query) {
