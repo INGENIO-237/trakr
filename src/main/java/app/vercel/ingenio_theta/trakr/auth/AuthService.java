@@ -1,6 +1,5 @@
 package app.vercel.ingenio_theta.trakr.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -15,17 +14,18 @@ import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @Service
 public class AuthService {
-    @Autowired
     private JwtService jwtService;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private AuthMapper mapper;
+
+    public AuthService(JwtService jwtService, AuthenticationManager authenticationManager, UserService userService,
+            AuthMapper mapper) {
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.mapper = mapper;
+    }
 
     public UserResponse register(RegisterDto dto) {
         return userService.create(mapper.toCreateUserDto(dto));

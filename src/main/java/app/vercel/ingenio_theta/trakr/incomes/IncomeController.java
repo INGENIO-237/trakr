@@ -1,6 +1,5 @@
 package app.vercel.ingenio_theta.trakr.incomes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,8 +29,11 @@ import jakarta.validation.Valid;
 @RequestMapping("incomes")
 @Tag(name = "Incomes", description = "Incomes API endpoints")
 public class IncomeController {
-    @Autowired
     private IIncomeService service;
+
+    public IncomeController(IIncomeService service) {
+        this.service = service;
+    }
 
     @GetMapping
     @Operation(summary = "Get all incomes", description = "Retrieve a paginated list of all incomes with optional filtering parameters")
@@ -57,9 +59,9 @@ public class IncomeController {
 
     })
     public ResponseEntity<AppApiResponse<IncomeResponse>> findById(@PathVariable("id") String id) {
-        IncomeResponse Income = service.findById(id);
+        IncomeResponse income = service.findById(id);
 
-        AppApiResponse<IncomeResponse> response = AppApiResponse.of(Income, "Income retrieved successfully");
+        AppApiResponse<IncomeResponse> response = AppApiResponse.of(income, "Income retrieved successfully");
 
         return ResponseEntity.ok(response);
     }
@@ -71,11 +73,11 @@ public class IncomeController {
             @ApiResponse(responseCode = "400", description = "Invalid income data provided"),
             @ApiResponse(responseCode = "409", description = "Income already exists")
     })
-    public ResponseEntity<AppApiResponse<IncomeResponse>> create(@Valid @RequestBody CreateIncomeDto Income)
+    public ResponseEntity<AppApiResponse<IncomeResponse>> create(@Valid @RequestBody CreateIncomeDto income)
             throws ApiException {
-        IncomeResponse IncomeResponse = service.create(Income);
+        IncomeResponse incomeResponse = service.create(income);
 
-        AppApiResponse<IncomeResponse> response = AppApiResponse.of(IncomeResponse, "Income created successfully");
+        AppApiResponse<IncomeResponse> response = AppApiResponse.of(incomeResponse, "Income created successfully");
 
         return ResponseEntity.ok(response);
     }
@@ -91,9 +93,9 @@ public class IncomeController {
     public ResponseEntity<AppApiResponse<IncomeResponse>> update(@PathVariable("id") String id,
             @Valid @RequestBody UpdateIncomeDto update) {
 
-        IncomeResponse IncomeResponse = service.update(id, update);
+        IncomeResponse incomeResponse = service.update(id, update);
 
-        AppApiResponse<IncomeResponse> response = AppApiResponse.of(IncomeResponse, "Income updated successfully");
+        AppApiResponse<IncomeResponse> response = AppApiResponse.of(incomeResponse, "Income updated successfully");
 
         return ResponseEntity.ok(response);
     }

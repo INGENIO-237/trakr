@@ -1,6 +1,5 @@
 package app.vercel.ingenio_theta.trakr.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,11 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import app.vercel.ingenio_theta.trakr.auth.dtos.LoginDto;
 import app.vercel.ingenio_theta.trakr.auth.dtos.LoginResponse;
 import app.vercel.ingenio_theta.trakr.auth.dtos.RegisterDto;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.common.UnauthorizedException;
 import app.vercel.ingenio_theta.trakr.shared.response.AppApiResponse;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,8 +24,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Endpoints for user authentication")
 public class AuthController {
-    @Autowired
     private AuthService service;
+
+    public AuthController(AuthService service) {
+        this.service = service;
+    }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Creates a new user account with the provided registration details.")
@@ -51,7 +54,7 @@ public class AuthController {
     })
     @SecurityRequirements
     public ResponseEntity<AppApiResponse<LoginResponse>> login(@Valid @RequestBody LoginDto credentials)
-            throws Exception {
+            throws UnauthorizedException {
         LoginResponse tokens = service.login(credentials);
 
         AppApiResponse<LoginResponse> response = AppApiResponse.of(tokens, "Logged in successfully");

@@ -2,7 +2,6 @@ package app.vercel.ingenio_theta.trakr.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +18,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    @Autowired
     private JwtService jwtService;
-
-    @Autowired
     private UserDetailsService userDetailsService;
+
+    public JwtFilter(
+            JwtService jwtService,
+            UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
     @SuppressWarnings("null")
     @Override

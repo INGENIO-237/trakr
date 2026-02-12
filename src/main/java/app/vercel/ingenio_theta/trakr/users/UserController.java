@@ -1,6 +1,5 @@
 package app.vercel.ingenio_theta.trakr.users;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +29,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("users")
 @Tag(name = "Users", description = "Users API endpoints")
 public class UserController {
-    @Autowired
     private IUserService service;
+
+    public UserController (IUserService service) {
+        this.service = service;
+    }
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Retrieve a paginated list of all users")
