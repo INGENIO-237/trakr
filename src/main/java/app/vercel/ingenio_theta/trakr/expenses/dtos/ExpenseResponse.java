@@ -1,22 +1,20 @@
 package app.vercel.ingenio_theta.trakr.expenses.dtos;
 
-import java.time.LocalDateTime;
-
 import app.vercel.ingenio_theta.trakr.expenses.models.ExpenseCategory;
+import app.vercel.ingenio_theta.trakr.shared.dto.BaseEntityResponse;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseResponse {
-    private String id;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+public class ExpenseResponse extends BaseEntityResponse {
     private double amount;
     private String description;
     private UserResponse user;

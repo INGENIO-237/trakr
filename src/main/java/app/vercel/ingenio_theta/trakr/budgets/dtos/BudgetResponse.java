@@ -1,21 +1,21 @@
 package app.vercel.ingenio_theta.trakr.budgets.dtos;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+import app.vercel.ingenio_theta.trakr.shared.dto.BaseEntityResponse;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class BudgetResponse {
-    private String id;
-    private LocalDateTime createdAt;
+public class BudgetResponse extends BaseEntityResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private double amount;

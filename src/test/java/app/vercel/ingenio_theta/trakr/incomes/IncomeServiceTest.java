@@ -75,7 +75,7 @@ public class IncomeServiceTest {
                 .amount(income.getAmount())
                 .description(income.getDescription())
                 .source(income.getSource())
-                .registeredAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .user(userResponse)
                 .build();
 
@@ -333,7 +333,7 @@ public class IncomeServiceTest {
                     .amount(1000 + i)
                     .description("Income " + i)
                     .source(IncomeSource.SALARY)
-                    .registeredAt(LocalDateTime.now().minusDays(i))
+                    .createdAt(LocalDateTime.now().minusDays(i))
                     .user(currentUser)
                     .build();
             incomes.add(income);

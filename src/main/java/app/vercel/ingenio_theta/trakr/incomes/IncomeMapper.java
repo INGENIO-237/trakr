@@ -14,13 +14,13 @@ import app.vercel.ingenio_theta.trakr.incomes.models.Income;
 public interface IncomeMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "registeredAt", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Income toEntity(CreateIncomeDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "registeredAt", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateEntity(UpdateIncomeDto dto, @MappingTarget Income income);
 
