@@ -25,7 +25,8 @@ public class UserService implements IUserService {
 
     private PasswordEncoder encoder;
 
-    public UserService(UserRepository repository, UserMapper mapper, CurrentUserService currentUserService, PasswordEncoder encoder) {
+    public UserService(UserRepository repository, UserMapper mapper, CurrentUserService currentUserService,
+            PasswordEncoder encoder) {
         this.repository = repository;
         this.mapper = mapper;
         this.currentUserService = currentUserService;
@@ -109,9 +110,8 @@ public class UserService implements IUserService {
             throw new ConflictException("You don't have permission to delete this user");
         }
 
-        if (id != null) {
-            repository.deleteById(id);
-        }
+        repository.deleteById(id);
+
     }
 
     private void checkEmailAvailability(String email) {

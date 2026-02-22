@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ConflictException;
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
@@ -29,6 +33,10 @@ public class UserServiceTest {
     private UserRepository repository;
     @Mock
     private UserMapper mapper;
+    @Mock
+    private CurrentUserService currentUserService;
+    @Mock
+    private PasswordEncoder encoder;
     @InjectMocks
     private UserService service;
 
@@ -55,6 +63,8 @@ public class UserServiceTest {
         when(mapper.toResponse(user)).thenReturn(response);
 
         when(repository.save(any(User.class))).thenReturn(user);
+
+        when(encoder.encode(any(String.class))).thenReturn("encoded-password");
 
         var resp = service.create(dto);
 
@@ -95,42 +105,55 @@ public class UserServiceTest {
                 .isInstanceOf(app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException.class);
     }
 
-    @SuppressWarnings("null")
+    @SuppressWarnings({ "null", "unchecked" })
     @Test
     void testFindAll() {
-        var user = User.builder().name("John").email("john@example.com").build();
+        var savedUser = User.builder().name("John").email("john@example.com").build();
+
+        Page<User> pageTobeReturned = new PageImpl<User>(List.of(savedUser));
 
         when(repository.findAll(any(Pageable.class)))
-                .thenReturn(new PageImpl<>(java.util.List.of(user)));
+                .thenReturn(pageTobeReturned);
+
+        when(mapper.toResponse(any(User.class)))
+                .thenReturn(UserResponse.builder().name(savedUser.getName()).email(savedUser.getEmail()).build());
+
+        when(mapper.toResponses(any(PageImpl.class))).thenCallRealMethod();
 
         GetUsersDto query = new GetUsersDto();
         var page = service.findAll(query);
 
         assertThat(page).isNotNull();
         assertThat(page.getTotalElements()).isEqualTo(1);
+        assertThat(page.getContent()).isNotNull();
+        assertThat(page.getContent().get(0)).isNotNull();
     }
 
     @SuppressWarnings("null")
     @Test
     void testUpdate_success() {
-        var existing = User.builder().id("u1").name("John").email("john@example.com").build();
+        when(currentUserService.getUser()).thenReturn(user);
 
-        when(repository.findById("u1")).thenReturn(Optional.of(existing));
+        when(repository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UpdateUserDto update = new UpdateUserDto("Johnny", null, null);
 
         when(repository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        var resp = service.update(update, "u1");
+        when(mapper.toResponse(any(User.class))).thenReturn(UserResponse.builder().name(update.name()).build());
+
+        var resp = service.update(update, user.getId());
 
         assertThat(resp).isNotNull();
-        assertThat(resp.getName()).isEqualTo("Johnny");
+        assertThat(resp.getName()).isEqualTo(update.name());
     }
 
+    @SuppressWarnings("null")
     @Test
     void testDelete() {
-        service.delete("u1");
+        when(currentUserService.getUser()).thenReturn(user);
+        service.delete(user.getId());
 
-        verify(repository).deleteById("u1");
+        verify(repository).deleteById(user.getId());
     }
 }
