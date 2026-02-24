@@ -104,7 +104,7 @@ public class BudgetService implements IBudgetService {
         @SuppressWarnings("null")
         Budget budget = repository.findById(budgetId).get();
 
-        if (budget.getUser().getId() != currentUserService.getUser().getId()) {
+        if (!currentUserService.getUser().getId().equals(budget.getUser().getId())) {
             throw new ForbiddenException("You don't have permission to update this budget");
         }
     }

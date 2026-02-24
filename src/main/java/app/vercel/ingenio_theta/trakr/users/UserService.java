@@ -72,7 +72,7 @@ public class UserService implements IUserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User with ID '" + id + "' not found"));
 
-        if (requestedUser.getId() != currentUserService.getUser().getId()) {
+        if (!currentUserService.getUser().getId().equals(requestedUser.getId())) {
             throw new ConflictException("You don't have permission to update this user");
         }
 
@@ -97,7 +97,7 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("Id cannot be null");
         }
 
-        if (id != currentUserService.getUser().getId()) {
+        if (!currentUserService.getUser().getId().equals(id)) {
             throw new ConflictException("You don't have permission to delete this user");
         }
 
