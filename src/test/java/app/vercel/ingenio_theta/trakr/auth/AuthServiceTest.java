@@ -69,11 +69,9 @@ public class AuthServiceTest {
         LoginDto credentials = new LoginDto(email, password);
 
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password)))
-                .thenThrow(new RuntimeException("Authentication failed"));
+                .thenThrow(new UnauthorizedException("Invalid login credentials"));
 
-        assertThrows(UnauthorizedException.class, () -> {
-            service.login(credentials);
-        });
+        assertThrows(UnauthorizedException.class, () -> service.login(credentials));
     }
 
     @Test

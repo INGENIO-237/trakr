@@ -24,16 +24,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("budgets")
 @Tag(name = "Budgets", description = "Endpoints for managing budgets")
 public class BudgetController {
     private final IBudgetService service;
-
-    public BudgetController(IBudgetService service) {
-        this.service = service;
-    }
 
     @GetMapping
     @Operation(summary = "Get all budgets", description = "Retrieve a paginated list of all budgets with optional filtering parameters.")

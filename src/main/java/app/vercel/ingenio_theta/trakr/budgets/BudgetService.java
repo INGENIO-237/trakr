@@ -16,21 +16,14 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.common.BadRequestExcepti
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BudgetService implements IBudgetService {
     private final BudgetRepository repository;
     private final BudgetMapper mapper;
     private final CurrentUserService currentUserService;
-
-    public BudgetService(
-            BudgetRepository repository,
-            BudgetMapper mapper,
-            CurrentUserService currentUserService) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.currentUserService = currentUserService;
-    }
 
     @Override
     public Page<BudgetResponse> findAll(GetBudgetsDto query) {

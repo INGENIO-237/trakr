@@ -20,15 +20,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IncomeService implements IIncomeService {
-    private IncomeRepository repository;
-    private IncomeMapper mapper;
-    private CurrentUserService currentUserService;
-
-    public IncomeService(IncomeRepository repository, IncomeMapper mapper, CurrentUserService currentUserService) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.currentUserService = currentUserService;
-    }
+    private final IncomeRepository repository;
+    private final IncomeMapper mapper;
+    private final CurrentUserService currentUserService;
 
     @Override
     public Page<IncomeResponse> findAll(final GetIncomesDto query) {

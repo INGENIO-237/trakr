@@ -19,16 +19,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Endpoints for user authentication")
 public class AuthController {
-    private AuthService service;
-
-    public AuthController(AuthService service) {
-        this.service = service;
-    }
+    private final AuthService service;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Creates a new user account with the provided registration details.")

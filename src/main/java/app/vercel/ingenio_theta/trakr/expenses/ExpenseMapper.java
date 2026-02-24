@@ -3,6 +3,7 @@ package app.vercel.ingenio_theta.trakr.expenses;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.data.domain.Page;
 
 import app.vercel.ingenio_theta.trakr.expenses.dtos.CreateExpenseDto;
@@ -10,7 +11,7 @@ import app.vercel.ingenio_theta.trakr.expenses.dtos.ExpenseResponse;
 import app.vercel.ingenio_theta.trakr.expenses.dtos.UpdateExpenseDto;
 import app.vercel.ingenio_theta.trakr.expenses.models.Expense;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ExpenseMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)

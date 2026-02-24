@@ -16,16 +16,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    private UserDetailsService userDetailsService;
-    private JwtFilter jwtFilter;
-
-    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter) {
-        this.userDetailsService = userDetailsService;
-        this.jwtFilter = jwtFilter;
-    }
+    private final UserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

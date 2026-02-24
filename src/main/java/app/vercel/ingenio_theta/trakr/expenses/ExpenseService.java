@@ -15,22 +15,14 @@ import app.vercel.ingenio_theta.trakr.expenses.models.Expense;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.core.ApiException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class ExpenseService implements IExpenseService {
-    private ExpenseRepository repository;
-    private ExpenseMapper mapper;
-    private CurrentUserService currentUserService;
-
-    public ExpenseService(
-        ExpenseRepository repository,
-        ExpenseMapper mapper,
-        CurrentUserService currentUserService
-    ) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.currentUserService = currentUserService;
-    }
+    private final ExpenseRepository repository;
+    private final ExpenseMapper mapper;
+    private final CurrentUserService currentUserService;
 
     @Override
     public Page<ExpenseResponse> findAll(final GetExpensesDto query) {

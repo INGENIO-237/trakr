@@ -9,14 +9,12 @@ import org.springframework.stereotype.Component;
 
 import app.vercel.ingenio_theta.trakr.users.User;
 import app.vercel.ingenio_theta.trakr.users.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
-    private UserRepository repository;
-
-    public AppUserDetailsService(UserRepository repository) {
-        this.repository = repository;
-    }
+    private final UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

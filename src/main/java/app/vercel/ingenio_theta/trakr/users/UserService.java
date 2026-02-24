@@ -14,23 +14,15 @@ import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UpdateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements IUserService {
-    private UserRepository repository;
-
-    private UserMapper mapper;
-
-    private CurrentUserService currentUserService;
-
-    private PasswordEncoder encoder;
-
-    public UserService(UserRepository repository, UserMapper mapper, CurrentUserService currentUserService, PasswordEncoder encoder) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.currentUserService = currentUserService;
-        this.encoder = encoder;
-    }
+    private final UserRepository repository;
+    private final UserMapper mapper;
+    private final CurrentUserService currentUserService;
+    private final PasswordEncoder encoder;
 
     @Override
     public Page<UserResponse> findAll(GetUsersDto query) {
@@ -109,9 +101,8 @@ public class UserService implements IUserService {
             throw new ConflictException("You don't have permission to delete this user");
         }
 
-        if (id != null) {
-            repository.deleteById(id);
-        }
+        repository.deleteById(id);
+
     }
 
     private void checkEmailAvailability(String email) {
