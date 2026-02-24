@@ -37,13 +37,13 @@ public class BudgetService implements IBudgetService {
     @Override
     public BudgetResponse findById(String id) {
         @SuppressWarnings("null")
-        Optional<Budget> buget = repository.findById(id);
+        Optional<Budget> budget = repository.findById(id);
 
-        if (buget.isEmpty()) {
-            throw new NotFoundException("Budget with id: " + id + " not found");
+        if (budget.isPresent()) {
+            return mapper.toResponse(budget.get());
         }
-
-        return mapper.toResponse(buget.get());
+        
+        throw new NotFoundException("Budget with id: " + id + " not found");
     }
 
     @Override
@@ -101,8 +101,7 @@ public class BudgetService implements IBudgetService {
     }
 
     private void validateOwnership(String budgetId) {
-        @SuppressWarnings("null")
-        Budget budget = repository.findById(budgetId).get();
+        BudgetResponse budget = this.findById(budgetId);
 
         if (!currentUserService.getUser().getId().equals(budget.getUser().getId())) {
             throw new ForbiddenException("You don't have permission to update this budget");

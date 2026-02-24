@@ -20,11 +20,11 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = repository.findByEmail(username);
 
-        if(user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        } else {
+        if (user.isPresent()) {
             return new Principal(user.get());
+        } else {
+            throw new UsernameNotFoundException("User not found");
         }
     }
-    
+
 }
