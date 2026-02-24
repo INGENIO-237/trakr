@@ -24,16 +24,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("users")
 @Tag(name = "Users", description = "Users API endpoints")
 public class UserController {
-    private IUserService service;
-
-    public UserController (IUserService service) {
-        this.service = service;
-    }
+    private final IUserService service;
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Retrieve a paginated list of all users")

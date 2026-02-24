@@ -15,18 +15,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private JwtService jwtService;
-    private UserDetailsService userDetailsService;
-
-    public JwtFilter(
-            JwtService jwtService,
-            UserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-    }
+    private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @SuppressWarnings("null")
     @Override

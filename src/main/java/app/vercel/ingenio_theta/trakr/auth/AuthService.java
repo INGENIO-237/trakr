@@ -11,21 +11,15 @@ import app.vercel.ingenio_theta.trakr.auth.dtos.RegisterDto;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.UnauthorizedException;
 import app.vercel.ingenio_theta.trakr.users.UserService;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
-    private JwtService jwtService;
-    private AuthenticationManager authenticationManager;
-    private UserService userService;
-    private AuthMapper mapper;
-
-    public AuthService(JwtService jwtService, AuthenticationManager authenticationManager, UserService userService,
-            AuthMapper mapper) {
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
-        this.mapper = mapper;
-    }
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final AuthMapper mapper;
 
     public UserResponse register(RegisterDto dto) {
         return userService.create(mapper.toCreateUserDto(dto));

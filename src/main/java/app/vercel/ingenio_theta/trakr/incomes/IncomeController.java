@@ -24,16 +24,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("incomes")
 @Tag(name = "Incomes", description = "Incomes API endpoints")
 public class IncomeController {
-    private IIncomeService service;
-
-    public IncomeController(IIncomeService service) {
-        this.service = service;
-    }
+    private final IIncomeService service;
 
     @GetMapping
     @Operation(summary = "Get all incomes", description = "Retrieve a paginated list of all incomes with optional filtering parameters")

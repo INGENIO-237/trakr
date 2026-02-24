@@ -24,16 +24,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("expenses")
 @Tag(name = "Expenses", description = "Endpoints for managing expenses")
 public class ExpenseController {
-    private IExpenseService service;
-
-    public ExpenseController(IExpenseService service) {
-        this.service = service;
-    }
+    private final IExpenseService service;
 
     @GetMapping
     @Operation(summary = "Get all expenses", description = "Retrieve a paginated list of all expenses with optional filtering parameters.")
