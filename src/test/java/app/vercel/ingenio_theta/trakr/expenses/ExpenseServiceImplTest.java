@@ -1,4 +1,4 @@
-package app.vercel.ingenio_theta.trakr.incomes;
+package app.vercel.ingenio_theta.trakr.expenses;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,28 +26,28 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.CreateIncomeDto;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.GetIncomesDto;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.UpdateIncomeDto;
-import app.vercel.ingenio_theta.trakr.incomes.models.Income;
-import app.vercel.ingenio_theta.trakr.incomes.models.IncomeSource;
+import app.vercel.ingenio_theta.trakr.expenses.dtos.CreateExpenseDto;
+import app.vercel.ingenio_theta.trakr.expenses.dtos.ExpenseResponse;
+import app.vercel.ingenio_theta.trakr.expenses.dtos.GetExpensesDto;
+import app.vercel.ingenio_theta.trakr.expenses.dtos.UpdateExpenseDto;
+import app.vercel.ingenio_theta.trakr.expenses.models.Expense;
+import app.vercel.ingenio_theta.trakr.expenses.models.ExpenseCategory;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenException;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.users.User;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @ExtendWith(MockitoExtension.class)
-public class IncomeServiceTest {
+public class ExpenseServiceImplTest {
     @Mock
-    private IncomeRepository repository;
+    private ExpenseRepository repository;
     @Mock
-    private IncomeMapper mapper;
+    private ExpenseMapper mapper;
     @Mock
     private CurrentUserService currentUserService;
 
     @InjectMocks
-    private IncomeService service;
+    private ExpenseService service;
 
     private String userId = obtainId();
 
@@ -57,97 +57,97 @@ public class IncomeServiceTest {
 
     private UserResponse userResponse = UserResponse.builder().id(currentUser.getId()).build();
 
-    List<Income> incomes = new ArrayList<>();
+    List<Expense> expenses = new ArrayList<>();
 
     @Test
     void testCreate() {
-        CreateIncomeDto dto = new CreateIncomeDto(1000, "Lorem ipsum dolor sit amet",
-                IncomeSource.SALARY.toString());
+        CreateExpenseDto dto = new CreateExpenseDto(1000, "Lorem ipsum dolor sit amet",
+                ExpenseCategory.FOOD.toString());
 
-        Income income = Income.builder()
+        Expense expense = Expense.builder()
                 .amount(dto.getAmount())
                 .description(dto.getDescription())
-                .source((IncomeSource.valueOf(dto.getSource())))
+                .category((ExpenseCategory.valueOf(dto.getCategory())))
                 .build();
 
-        IncomeResponse response = IncomeResponse.builder()
+        ExpenseResponse response = ExpenseResponse.builder()
                 .id(obtainId())
-                .amount(income.getAmount())
-                .description(income.getDescription())
-                .source(income.getSource())
+                .amount(expense.getAmount())
+                .description(expense.getDescription())
+                .category(expense.getCategory())
                 .createdAt(LocalDateTime.now())
                 .user(userResponse)
                 .build();
 
-        when(mapper.toEntity(dto)).thenReturn(income);
+        when(mapper.toEntity(dto)).thenReturn(expense);
         when(mapper.toResponse(any())).thenReturn(response);
         when(currentUserService.getUser()).thenReturn(currentUser);
-        when(repository.save(income)).thenReturn(income);
+        when(repository.save(expense)).thenReturn(expense);
 
-        IncomeResponse incomeResponse = service.create(dto);
+        ExpenseResponse expenseResponse = service.create(dto);
 
-        assertEquals(incomeResponse, response);
+        assertEquals(expenseResponse, response);
     }
 
     @SuppressWarnings("null")
     @Test
     void testDelete_OK() {
-        String incomeId = obtainId();
-        Income income = Income.builder().id(incomeId).user(currentUser).build();
+        String expenseId = obtainId();
+        Expense expense = Expense.builder().id(expenseId).user(currentUser).build();
 
         when(currentUserService.getUser()).thenReturn(currentUser);
 
-        when(repository.findById(incomeId)).thenReturn(Optional.of(income));
+        when(repository.findById(expenseId)).thenReturn(Optional.of(expense));
 
         assertDoesNotThrow(() -> {
-            service.delete(incomeId);
+            service.delete(expenseId);
         });
     }
 
     @SuppressWarnings("null")
     @Test
     void testDelete_NotFound() {
-        String incomeId = obtainId();
+        String expenseId = obtainId();
 
-        when(repository.findById(incomeId)).thenReturn(Optional.empty());
+        when(repository.findById(expenseId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
-            service.delete(incomeId);
+            service.delete(expenseId);
         });
     }
 
     @SuppressWarnings("null")
     @Test
     void testDelete_NonOwner() {
-        String incomeId = obtainId();
-        Income income = Income.builder().id(incomeId).user(currentUser).build();
+        String expenseId = obtainId();
+        Expense expense = Expense.builder().id(expenseId).user(currentUser).build();
 
         when(currentUserService.getUser()).thenReturn(User.builder().id(obtainId()).build());
 
-        when(repository.findById(incomeId)).thenReturn(Optional.of(income));
+        when(repository.findById(expenseId)).thenReturn(Optional.of(expense));
 
         assertThrows(ForbiddenException.class, () -> {
-            service.delete(incomeId);
+            service.delete(expenseId);
         });
     }
 
     @SuppressWarnings({ "null", "unchecked" })
     @Test
     void testFindAll_10limit() {
-        populateIncomes();
+        populateExpenses();
         when(mapper.toResponses(any(Page.class))).thenCallRealMethod();
 
         when(currentUserService.getUser()).thenReturn(currentUser);
 
-        GetIncomesDto dto = new GetIncomesDto();
+        GetExpensesDto dto = new GetExpensesDto();
 
         Pageable pageable = dto.toPageable();
 
-        Page<Income> page = new PageImpl<>(incomes, pageable, incomes.size());
+        Page<Expense> page = new PageImpl<>(expenses, pageable, expenses.size());
 
         when(repository.findByUser(currentUser, pageable)).thenReturn(page);
 
-        Page<IncomeResponse> xpenses = service.findAll(dto);
+        Page<ExpenseResponse> xpenses = service.findAll(dto);
 
         assertNotNull(xpenses);
         assertEquals(page.getSize(), xpenses.getSize());
@@ -157,23 +157,23 @@ public class IncomeServiceTest {
     @SuppressWarnings({ "null", "unchecked" })
     @Test
     void testFindAll_getNextPage() {
-        populateIncomes();
+        populateExpenses();
         when(mapper.toResponses(any(Page.class))).thenCallRealMethod();
-        
+
         when(currentUserService.getUser()).thenReturn(currentUser);
-        
-        GetIncomesDto dto = new GetIncomesDto();
+
+        GetExpensesDto dto = new GetExpensesDto();
         int nextPage = dto.getPage() + 1;
 
         dto.setPage(nextPage);
 
         Pageable pageable = dto.toPageable();
 
-        Page<Income> page = new PageImpl<>(incomes, pageable, incomes.size());
+        Page<Expense> page = new PageImpl<>(expenses, pageable, expenses.size());
 
         when(repository.findByUser(currentUser, pageable)).thenReturn(page);
 
-        Page<IncomeResponse> xpenses = service.findAll(dto);
+        Page<ExpenseResponse> xpenses = service.findAll(dto);
 
         assertNotNull(xpenses);
         assertEquals(page.getSize(), xpenses.getSize());
@@ -186,21 +186,21 @@ public class IncomeServiceTest {
     void testFindAll_20limit() {
         int limit = 20;
 
-        populateIncomes();
+        populateExpenses();
         when(mapper.toResponses(any(Page.class))).thenCallRealMethod();
 
         when(currentUserService.getUser()).thenReturn(currentUser);
 
-        GetIncomesDto dto = new GetIncomesDto();
+        GetExpensesDto dto = new GetExpensesDto();
         dto.setSize(limit);
 
         Pageable pageable = dto.toPageable();
 
-        Page<Income> page = new PageImpl<>(incomes, pageable, incomes.size());
+        Page<Expense> page = new PageImpl<>(expenses, pageable, expenses.size());
 
         when(repository.findByUser(currentUser, pageable)).thenReturn(page);
 
-        Page<IncomeResponse> xpenses = service.findAll(dto);
+        Page<ExpenseResponse> xpenses = service.findAll(dto);
 
         assertNotNull(xpenses);
         assertEquals(page.getSize(), xpenses.getSize());
@@ -210,106 +210,106 @@ public class IncomeServiceTest {
     @SuppressWarnings("null")
     @Test
     void testFindById_OK() {
-        String incomeId = obtainId();
-        Income income = Income.builder().id(incomeId).user(currentUser).build();
+        String expenseId = obtainId();
+        Expense expense = Expense.builder().id(expenseId).user(currentUser).build();
 
         when(currentUserService.getUser()).thenReturn(currentUser);
-        when(repository.findById(incomeId)).thenReturn(Optional.of(income));
-        when(mapper.toResponse(any())).thenReturn(IncomeResponse.builder().id(incomeId).user(userResponse).build());
+        when(repository.findById(expenseId)).thenReturn(Optional.of(expense));
+        when(mapper.toResponse(any())).thenReturn(ExpenseResponse.builder().id(expenseId).user(userResponse).build());
 
         assertDoesNotThrow(() -> {
-            service.findById(incomeId);
-        }, "Income with id: " + incomeId + " not found");
+            service.findById(expenseId);
+        }, "Expense with id: " + expenseId + " not found");
     }
 
     @SuppressWarnings("null")
     @Test
     void testFindById_NonOwner() {
-        String incomeId = obtainId();
+        String expenseId = obtainId();
         User owner = User.builder()
                 .id(obtainId())
                 .build();
 
         when(currentUserService.getUser()).thenReturn(currentUser);
 
-        when(repository.findById(incomeId)).thenReturn(Optional.of(Income.builder().user(owner).build()));
+        when(repository.findById(expenseId)).thenReturn(Optional.of(Expense.builder().user(owner).build()));
 
         assertThrows(ForbiddenException.class, () -> {
-            service.findById(incomeId);
+            service.findById(expenseId);
         });
     }
 
     @SuppressWarnings("null")
     @Test
     void testFindById_NotFound() {
-        String incomeId = obtainId();
+        String expenseId = obtainId();
 
         when(repository.findById(anyString())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
-            service.findById(incomeId);
+            service.findById(expenseId);
         });
     }
 
     @SuppressWarnings("null")
     @Test
     void testUpdate_OK() {
-        String incomeId = obtainId();
+        String expenseId = obtainId();
 
-        // Existing income entity to be used later for the update
-        Income existingIncome = Income.builder().id(incomeId).user(currentUser).build();
+        // Existing expense entity to be used later for the update
+        Expense existingExpense = Expense.builder().id(expenseId).user(currentUser).build();
 
         // Update body
-        UpdateIncomeDto updateDto = new UpdateIncomeDto(null, null, IncomeSource.SALARY.toString());
+        UpdateExpenseDto updateDto = new UpdateExpenseDto(null, null, ExpenseCategory.FOOD.toString());
 
-        // Persisted income (updated version)
-        Income savedIncome = Income.builder()
-                .id(incomeId)
+        // Persisted expense (updated version)
+        Expense savedExpense = Expense.builder()
+                .id(expenseId)
                 .user(currentUser)
-                .source(IncomeSource.SALARY)
+                .category(ExpenseCategory.FOOD)
                 .build();
 
-        // Income response - Updated version
-        IncomeResponse xpenseResponse = IncomeResponse.builder()
-                .id(incomeId)
+        // Expense response - Updated version
+        ExpenseResponse xpenseResponse = ExpenseResponse.builder()
+                .id(expenseId)
                 .user(userResponse)
-                .source(IncomeSource.SALARY)
+                .category(ExpenseCategory.FOOD)
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        when(repository.findById(incomeId)).thenReturn(Optional.of(existingIncome));
+        when(repository.findById(expenseId)).thenReturn(Optional.of(existingExpense));
         when(currentUserService.getUser()).thenReturn(currentUser);
-        when(repository.save(any())).thenReturn(savedIncome);
-        when(mapper.toResponse(savedIncome)).thenReturn(xpenseResponse);
+        when(repository.save(any())).thenReturn(savedExpense);
+        when(mapper.toResponse(savedExpense)).thenReturn(xpenseResponse);
 
-        IncomeResponse updatedIncome = service.update(incomeId, updateDto);
+        ExpenseResponse updatedExpense = service.update(expenseId, updateDto);
 
-        assertEquals(xpenseResponse, updatedIncome);
+        assertEquals(xpenseResponse, updatedExpense);
     }
 
     @SuppressWarnings("null")
     @Test
     void testUpdate_NotFound() {
-        String incomeId = obtainId();
+        String expenseId = obtainId();
 
-        when(repository.findById(incomeId)).thenReturn(Optional.empty());
+        when(repository.findById(expenseId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
-            service.update(incomeId, null);
+            service.update(expenseId, null);
         });
     }
 
     @SuppressWarnings("null")
     @Test
     void testUpdate_NonOwner() {
-        String incomeId = obtainId();
-        Income existingIncome = Income.builder().id(incomeId).user(currentUser).build();
+        String expenseId = obtainId();
+        Expense existingExpense = Expense.builder().id(expenseId).user(currentUser).build();
 
         when(currentUserService.getUser()).thenReturn(User.builder().id(obtainId()).build());
-        when(repository.findById(incomeId)).thenReturn(Optional.of(existingIncome));
+        when(repository.findById(expenseId)).thenReturn(Optional.of(existingExpense));
 
         assertThrows(ForbiddenException.class, () -> {
-            service.update(incomeId, null);
+            service.update(expenseId, null);
         });
     }
 
@@ -318,25 +318,25 @@ public class IncomeServiceTest {
     }
 
     @AfterEach
-    private void cleanupIncomes() {
-        incomes.clear();
+    private void cleanupExpenses() {
+        expenses.clear();
     }
 
-    private void populateIncomes() {
-        populateIncomes(20);
+    private void populateExpenses() {
+        populateExpenses(20);
     }
 
-    private void populateIncomes(int size) {
+    private void populateExpenses(int size) {
         for (int i = 0; i < size; i++) {
-            Income income = Income.builder()
+            Expense expense = Expense.builder()
                     .id(obtainId())
                     .amount(1000 + i)
-                    .description("Income " + i)
-                    .source(IncomeSource.SALARY)
+                    .description("Expense " + i)
+                    .category(ExpenseCategory.FOOD)
                     .createdAt(LocalDateTime.now().minusDays(i))
                     .user(currentUser)
                     .build();
-            incomes.add(income);
+            expenses.add(expense);
         }
     }
 }

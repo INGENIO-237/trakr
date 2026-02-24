@@ -31,80 +31,82 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("budgets")
 @Tag(name = "Budgets", description = "Endpoints for managing budgets")
 public class BudgetController {
-    private final IBudgetService service;
+        private final BudgetService service;
 
-    @GetMapping
-    @Operation(summary = "Get all budgets", description = "Retrieve a paginated list of all budgets with optional filtering parameters.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Budgets retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid query parameters")
-    })
-    public ResponseEntity<PaginatedApiResponse<BudgetResponse>> findAll(@ModelAttribute GetBudgetsDto query) {
-        Page<BudgetResponse> budgets = service.findAll(query);
+        @GetMapping
+        @Operation(summary = "Get all budgets", description = "Retrieve a paginated list of all budgets with optional filtering parameters.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Budgets retrieved successfully"),
+                        @ApiResponse(responseCode = "400", description = "Invalid query parameters")
+        })
+        public ResponseEntity<PaginatedApiResponse<BudgetResponse>> findAll(@ModelAttribute GetBudgetsDto query) {
+                Page<BudgetResponse> budgets = service.findAll(query);
 
-        PaginatedApiResponse<BudgetResponse> response = PaginatedApiResponse.of(budgets,
-                "Budgets retrieved successfully");
+                PaginatedApiResponse<BudgetResponse> response = PaginatedApiResponse.of(budgets,
+                                "Budgets retrieved successfully");
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get budget by ID", description = "Retrieve a specific budget by its unique ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Budget retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Budget not found"),
-            @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
+        @GetMapping("/{id}")
+        @Operation(summary = "Get budget by ID", description = "Retrieve a specific budget by its unique ID.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Budget retrieved successfully"),
+                        @ApiResponse(responseCode = "404", description = "Budget not found"),
+                        @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
 
-    })
-    public ResponseEntity<AppApiResponse<BudgetResponse>> findById(@PathVariable("id") String id) {
-        BudgetResponse budget = service.findById(id);
+        })
+        public ResponseEntity<AppApiResponse<BudgetResponse>> findById(@PathVariable("id") String id) {
+                BudgetResponse budget = service.findById(id);
 
-        AppApiResponse<BudgetResponse> response = AppApiResponse.of(budget, "Budget retrieved successfully");
+                AppApiResponse<BudgetResponse> response = AppApiResponse.of(budget, "Budget retrieved successfully");
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @PostMapping
-    @Operation(summary = "Create a new budget", description = "Create a new budget with the provided details.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Budget created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid budget data provided")
-    })
-    public ResponseEntity<AppApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget)
-            throws ApiException {
-        BudgetResponse budgetResponse = service.create(budget);
+        @PostMapping
+        @Operation(summary = "Create a new budget", description = "Create a new budget with the provided details.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "Budget created successfully"),
+                        @ApiResponse(responseCode = "400", description = "Invalid budget data provided")
+        })
+        public ResponseEntity<AppApiResponse<BudgetResponse>> create(@Valid @RequestBody CreateBudgetDto budget)
+                        throws ApiException {
+                BudgetResponse budgetResponse = service.create(budget);
 
-        AppApiResponse<BudgetResponse> response = AppApiResponse.of(budgetResponse, "Budget created successfully");
+                AppApiResponse<BudgetResponse> response = AppApiResponse.of(budgetResponse,
+                                "Budget created successfully");
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update an existing budget", description = "Update the details of an existing budget by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Budget updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid budget data provided"),
-            @ApiResponse(responseCode = "404", description = "Budget not found"),
-            @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
-    })
-    public ResponseEntity<AppApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
-            @Valid @RequestBody UpdateBudgetDto update) {
+        @PutMapping("/{id}")
+        @Operation(summary = "Update an existing budget", description = "Update the details of an existing budget by its ID.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Budget updated successfully"),
+                        @ApiResponse(responseCode = "400", description = "Invalid budget data provided"),
+                        @ApiResponse(responseCode = "404", description = "Budget not found"),
+                        @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
+        })
+        public ResponseEntity<AppApiResponse<BudgetResponse>> update(@PathVariable("id") String id,
+                        @Valid @RequestBody UpdateBudgetDto update) {
 
-        BudgetResponse budgetResponse = service.update(id, update);
+                BudgetResponse budgetResponse = service.update(id, update);
 
-        AppApiResponse<BudgetResponse> response = AppApiResponse.of(budgetResponse, "Budget updated successfully");
+                AppApiResponse<BudgetResponse> response = AppApiResponse.of(budgetResponse,
+                                "Budget updated successfully");
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a budget", description = "Delete an existing budget by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Budget deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Budget not found"),
-            @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
-    })
-    public void delete(@PathVariable("id") String id) {
-        service.delete(id);
-    }
+        @DeleteMapping("/{id}")
+        @Operation(summary = "Delete a budget", description = "Delete an existing budget by its ID.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Budget deleted successfully"),
+                        @ApiResponse(responseCode = "404", description = "Budget not found"),
+                        @ApiResponse(responseCode = "403", description = "Forbidden access to budget"),
+        })
+        public void delete(@PathVariable("id") String id) {
+                service.delete(id);
+        }
 }
