@@ -14,11 +14,13 @@ public interface BudgetMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Budget toEntity(CreateBudgetDto dto);
-
+    
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void updateEntity(UpdateBudgetDto dto, @MappingTarget Budget budget);
 
     BudgetResponse toResponse(Budget budget);
