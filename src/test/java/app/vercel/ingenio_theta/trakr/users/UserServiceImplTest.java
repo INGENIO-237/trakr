@@ -28,7 +28,7 @@ import app.vercel.ingenio_theta.trakr.users.dtos.UpdateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UserServiceImplTest {
     @Mock
     private UserRepository repository;
     @Mock
