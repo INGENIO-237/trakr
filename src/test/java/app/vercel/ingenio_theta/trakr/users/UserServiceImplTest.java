@@ -22,10 +22,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ConflictException;
+import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.users.dtos.CreateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.GetUsersDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UpdateUserDto;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
+import net.datafaker.Faker;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -38,11 +40,14 @@ public class UserServiceImplTest {
     @Mock
     private PasswordEncoder encoder;
     @InjectMocks
-    private UserService service;
+    private UserServiceImpl service;
 
-    CreateUserDto dto = new CreateUserDto("john@example.com", "John", "secret123");
+    private Faker faker = new Faker();
+
+    CreateUserDto dto = new CreateUserDto(faker.internet().emailAddress(), faker.name().name(),
+            faker.internet().password());
     User user = User.builder()
-            .id("some-random-uuid")
+            .id(faker.internet().uuidv4())
             .name(dto.name())
             .email(dto.email())
             .password(dto.password())
@@ -64,7 +69,7 @@ public class UserServiceImplTest {
 
         when(repository.save(any(User.class))).thenReturn(user);
 
-        when(encoder.encode(any(String.class))).thenReturn("encoded-password");
+        when(encoder.encode(any(String.class))).thenReturn(faker.internet().password());
 
         var resp = service.create(dto);
 
@@ -99,16 +104,21 @@ public class UserServiceImplTest {
 
     @Test
     void testFindById_notFound() {
-        when(repository.findById("missing")).thenReturn(Optional.empty());
+        String missingId = faker.internet().uuid();
 
-        assertThatThrownBy(() -> service.findById("missing"))
-                .isInstanceOf(app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException.class);
+        if (missingId != null) {
+            when(repository.findById(missingId)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> service.findById(missingId))
+                    .isInstanceOf(NotFoundException.class);
+        }
+
     }
 
     @SuppressWarnings({ "null", "unchecked" })
     @Test
     void testFindAll() {
-        var savedUser = User.builder().name("John").email("john@example.com").build();
+        var savedUser = User.builder().name(faker.name().firstName()).email(faker.internet().emailAddress()).build();
 
         Page<User> pageTobeReturned = new PageImpl<User>(List.of(savedUser));
 
@@ -136,7 +146,7 @@ public class UserServiceImplTest {
 
         when(repository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        UpdateUserDto update = new UpdateUserDto("Johnny", null, null);
+        UpdateUserDto update = new UpdateUserDto(faker.name().maleFirstName(), null, null);
 
         when(repository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 

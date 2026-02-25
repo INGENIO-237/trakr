@@ -27,8 +27,8 @@ import org.springframework.data.domain.Pageable;
 
 import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.CreateIncomeDto;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.GetIncomesDto;
+import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.UpdateIncomeDto;
 import app.vercel.ingenio_theta.trakr.incomes.models.Income;
 import app.vercel.ingenio_theta.trakr.incomes.models.IncomeSource;
@@ -36,6 +36,7 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenExceptio
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.users.User;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
+import net.datafaker.Faker;
 
 @ExtendWith(MockitoExtension.class)
 public class IncomeServiceImplTest {
@@ -47,7 +48,9 @@ public class IncomeServiceImplTest {
     private CurrentUserService currentUserService;
 
     @InjectMocks
-    private IncomeService service;
+    private IncomeServiceImpl service;
+
+    private Faker faker = new Faker();
 
     private String userId = obtainId();
 
@@ -61,7 +64,7 @@ public class IncomeServiceImplTest {
 
     @Test
     void testCreate() {
-        CreateIncomeDto dto = new CreateIncomeDto(1000, "Lorem ipsum dolor sit amet",
+        CreateIncomeDto dto = new CreateIncomeDto(1000, faker.text().text(20),
                 IncomeSource.SALARY.toString());
 
         Income income = Income.builder()
@@ -330,8 +333,8 @@ public class IncomeServiceImplTest {
         for (int i = 0; i < size; i++) {
             Income income = Income.builder()
                     .id(obtainId())
-                    .amount(1000 + i)
-                    .description("Income " + i)
+                    .amount(faker.number().randomNumber())
+                    .description(faker.text().text(20))
                     .source(IncomeSource.SALARY)
                     .createdAt(LocalDateTime.now().minusDays(i))
                     .user(currentUser)
