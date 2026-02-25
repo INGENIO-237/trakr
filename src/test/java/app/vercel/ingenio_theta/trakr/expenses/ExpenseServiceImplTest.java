@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,6 +37,7 @@ import app.vercel.ingenio_theta.trakr.shared.exceptions.common.ForbiddenExceptio
 import app.vercel.ingenio_theta.trakr.shared.exceptions.common.NotFoundException;
 import app.vercel.ingenio_theta.trakr.users.User;
 import app.vercel.ingenio_theta.trakr.users.dtos.UserResponse;
+import net.datafaker.Faker;
 
 @ExtendWith(MockitoExtension.class)
 public class ExpenseServiceImplTest {
@@ -47,7 +49,9 @@ public class ExpenseServiceImplTest {
     private CurrentUserService currentUserService;
 
     @InjectMocks
-    private ExpenseService service;
+    private ExpenseServiceImpl service;
+
+    private Faker faker;
 
     private String userId = obtainId();
 
@@ -59,9 +63,14 @@ public class ExpenseServiceImplTest {
 
     List<Expense> expenses = new ArrayList<>();
 
+    @BeforeEach
+    void setup() {
+        faker = new Faker();
+    }
+
     @Test
     void testCreate() {
-        CreateExpenseDto dto = new CreateExpenseDto(1000, "Lorem ipsum dolor sit amet",
+        CreateExpenseDto dto = new CreateExpenseDto(1000, faker.text().text(20),
                 ExpenseCategory.FOOD.toString());
 
         Expense expense = Expense.builder()
@@ -330,8 +339,8 @@ public class ExpenseServiceImplTest {
         for (int i = 0; i < size; i++) {
             Expense expense = Expense.builder()
                     .id(obtainId())
-                    .amount(1000 + i)
-                    .description("Expense " + i)
+                    .amount(faker.number().randomNumber())
+                    .description(faker.text().text(20))
                     .category(ExpenseCategory.FOOD)
                     .createdAt(LocalDateTime.now().minusDays(i))
                     .user(currentUser)
