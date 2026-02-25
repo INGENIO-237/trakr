@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,8 +27,8 @@ import org.springframework.data.domain.Pageable;
 
 import app.vercel.ingenio_theta.trakr.auth.CurrentUserService;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.CreateIncomeDto;
-import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.GetIncomesDto;
+import app.vercel.ingenio_theta.trakr.incomes.dtos.IncomeResponse;
 import app.vercel.ingenio_theta.trakr.incomes.dtos.UpdateIncomeDto;
 import app.vercel.ingenio_theta.trakr.incomes.models.Income;
 import app.vercel.ingenio_theta.trakr.incomes.models.IncomeSource;
@@ -51,12 +50,7 @@ public class IncomeServiceImplTest {
     @InjectMocks
     private IncomeServiceImpl service;
 
-    private Faker faker;
-
-    @BeforeEach
-    void setup() {
-        faker = new Faker();
-    }
+    private Faker faker = new Faker();
 
     private String userId = obtainId();
 

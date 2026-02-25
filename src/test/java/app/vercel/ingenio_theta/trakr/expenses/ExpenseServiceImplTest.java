@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +50,7 @@ public class ExpenseServiceImplTest {
     @InjectMocks
     private ExpenseServiceImpl service;
 
-    private Faker faker;
+    private Faker faker = new Faker();
 
     private String userId = obtainId();
 
@@ -62,11 +61,6 @@ public class ExpenseServiceImplTest {
     private UserResponse userResponse = UserResponse.builder().id(currentUser.getId()).build();
 
     List<Expense> expenses = new ArrayList<>();
-
-    @BeforeEach
-    void setup() {
-        faker = new Faker();
-    }
 
     @Test
     void testCreate() {

@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,31 +42,23 @@ public class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl service;
 
-    private Faker faker;
+    private Faker faker = new Faker();
 
-    CreateUserDto dto;
-    User user;
-    UserResponse response;
-
-    @BeforeEach
-    void setUp() {
-        faker = new Faker();
-        dto = new CreateUserDto(faker.internet().emailAddress(), faker.name().name(),
-                faker.internet().password());
-        user = User.builder()
-                .id(faker.internet().uuidv4())
-                .name(dto.name())
-                .email(dto.email())
-                .password(dto.password())
-                .build();
-        response = UserResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
-    }
+    CreateUserDto dto = new CreateUserDto(faker.internet().emailAddress(), faker.name().name(),
+            faker.internet().password());
+    User user = User.builder()
+            .id(faker.internet().uuidv4())
+            .name(dto.name())
+            .email(dto.email())
+            .password(dto.password())
+            .build();
+    UserResponse response = UserResponse.builder()
+            .id(user.getId())
+            .name(user.getName())
+            .email(user.getEmail())
+            .createdAt(user.getCreatedAt())
+            .updatedAt(user.getUpdatedAt())
+            .build();
 
     @SuppressWarnings("null")
     @Test
