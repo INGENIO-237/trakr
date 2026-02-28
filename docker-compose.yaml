@@ -1,0 +1,36 @@
+name: trakr-backend
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - trakr-network
+  api:
+    depends_on:
+      - postgres
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      DB_PORT: ${DB_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      DATASOURCE_USERNAME: ${POSTGRES_USER}
+      DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - trakr-network
+
+volumes:
+  db_data:
+
+networks:
+  trakr-network:
+    driver: bridge

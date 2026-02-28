@@ -2,9 +2,9 @@ spring:
   application:
     name: trakr
   datasource:
-    url: jdbc:postgresql://localhost:5433/trakr
-    username: trakr-user
-    password: securepassword
+    url: jdbc:postgresql://postgres:${DB_PORT}/${POSTGRES_DB}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -15,4 +15,4 @@ spring:
         "[format_sql]": true
 
 jwt:
-  secret: cFA5v7CmIv1Z1N1wCuLxV/woQ0z9quBuf5MknivXaIU=
+  secret: ${JWT_SECRET}
